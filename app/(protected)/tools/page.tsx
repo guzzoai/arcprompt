@@ -302,7 +302,7 @@ export default function ToolsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="py-2">
+        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
@@ -353,7 +353,7 @@ export default function ToolsPage() {
             return (
               <Card
                 key={category.id}
-                className={`cursor-pointer transition-colors hover:bg-gray-50 ${
+                className={`cursor-pointer bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 ${
                   selectedCategory === category.id ? "border-purple-500 bg-purple-50" : ""
                 }`}
                 onClick={() => setSelectedCategory(category.id)}
@@ -379,7 +379,7 @@ export default function ToolsPage() {
           <TabsContent value="all" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredTools.map((tool) => (
-                <Card key={tool.id} className="hover:shadow-lg transition-shadow">
+                <Card key={tool.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
@@ -452,7 +452,7 @@ export default function ToolsPage() {
           <TabsContent value="featured" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {featuredTools.map((tool) => (
-                <Card key={tool.id} className="hover:shadow-lg transition-shadow border-2 border-yellow-200">
+                <Card key={tool.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
@@ -533,7 +533,7 @@ export default function ToolsPage() {
                   </div>
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                     {categoryTools.slice(0, 6).map((tool) => (
-                      <Card key={tool.id} className="hover:shadow-lg transition-shadow">
+                      <Card key={tool.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                         <CardHeader>
                           <div className="flex items-start justify-between">
                             <div className="flex items-center space-x-3">

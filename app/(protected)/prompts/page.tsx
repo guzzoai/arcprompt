@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye } from "lucide-react"
+import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye, Lock } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
 
@@ -16,6 +16,12 @@ export default function PromptsPage() {
   
   // For demo purposes, treating all users as free - can be changed based on user.user_metadata
   const isFreePlan = true // Change this logic based on your user plan detection
+  
+  // Function to determine if a prompt is unlocked (for demo purposes)
+  const isPromptUnlocked = (promptId: number) => {
+    // Make prompts with IDs 1, 3, and 5 unlocked for demo
+    return [1, 3, 5].includes(promptId)
+  }
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
@@ -187,7 +193,7 @@ export default function PromptsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="py-2">
+        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
@@ -241,12 +247,15 @@ export default function PromptsPage() {
           <TabsContent value="all" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {sortedPrompts.map((prompt) => (
-                <Card key={prompt.id} className="hover:shadow-lg transition-shadow flex flex-col h-[300px]">
-                  <CardHeader>
+                <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col h-[300px] gap-0">
+                  <CardHeader className="pb-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <CardTitle className="text-lg leading-tight">{prompt.title}</CardTitle>
-                        <CardDescription className="mt-2 line-clamp-2">{prompt.description}</CardDescription>
+                        <div className="mt-2">
+                          <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                        </div>
+                        <CardDescription className="line-clamp-2">{prompt.description}</CardDescription>
                       </div>
                       <Button
                         variant="ghost"
@@ -262,29 +271,24 @@ export default function PromptsPage() {
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4 flex-1 flex flex-col justify-between">
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">{prompt.category}</Badge>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {prompt.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+                  <CardContent className="flex-1 flex flex-col justify-between p-0 pb-4 px-6">
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {prompt.tags.map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-xs">
+                          {tag}
+                        </Badge>
+                      ))}
                     </div>
 
-                    <div className="flex justify-center pt-2 border-t">
-                      {isFreePlan ? (
-                        <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 text-white">
-                          🔒 Unlock Prompt
+                    <div className="flex justify-center pt-2 border-t mt-3">
+                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                          <Lock className="w-4 h-4 mr-2" />
+                          Unlock Prompt
                         </Button>
                       ) : (
-                        <Button size="sm" className="w-full">
-                          <Eye className="w-4 h-4 mr-1" />
+                        <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                          <Eye className="w-4 h-4 mr-2" />
                           View Prompt
                         </Button>
                       )}
@@ -300,7 +304,7 @@ export default function PromptsPage() {
               {sortedPrompts
                 .filter((prompt) => savedPrompts.includes(prompt.id))
                 .map((prompt) => (
-                  <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
+                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -376,7 +380,7 @@ export default function PromptsPage() {
                 .sort((a, b) => b.usage - a.usage)
                 .slice(0, 9)
                 .map((prompt) => (
-                  <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
+                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex-1">

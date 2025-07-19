@@ -150,21 +150,22 @@ export default function PromptDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Left Column - Tabbed Content */}
           <div className="lg:col-span-3">
-            <Card>
-              <CardContent className="p-0">
-                <Tabs defaultValue={tabTriggers[0].value} className="w-full">
-                  <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${tabTriggers.length}, minmax(0, 1fr))` }}>
-                    {tabTriggers.map((trigger) => (
-                      <TabsTrigger key={trigger.value} value={trigger.value} className="text-sm font-medium">
-                        {trigger.label}
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
+            <Tabs defaultValue={tabTriggers[0].value} className="w-full space-y-6">
+              <TabsList className="grid w-full" style={{ gridTemplateColumns: `repeat(${tabTriggers.length}, minmax(0, 1fr))` }}>
+                {tabTriggers.map((trigger) => (
+                  <TabsTrigger key={trigger.value} value={trigger.value} className="text-sm font-medium">
+                    {trigger.label}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              
+              <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+                <CardContent className="p-0">
 
                   {/* Single Prompt Tab */}
                   {!isMultiStep && (
-                    <TabsContent value="prompt" className="p-6">
-                      <div className="space-y-4">
+                    <TabsContent value="prompt" className="p-0">
+                      <div className="px-6 space-y-4">
                         <div className="flex items-center justify-between">
                           <h3 className="text-lg font-semibold text-gray-900">Copy & Paste Prompt</h3>
                           <Button 
@@ -195,8 +196,8 @@ export default function PromptDetailPage() {
 
                   {/* Multi-Step Tabs */}
                   {isMultiStep && prompt.steps?.map((step) => (
-                    <TabsContent key={`step-${step.stepNumber}`} value={`step-${step.stepNumber}`} className="p-6">
-                      <div className="space-y-4">
+                    <TabsContent key={`step-${step.stepNumber}`} value={`step-${step.stepNumber}`} className="p-0">
+                      <div className="px-6 space-y-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
@@ -234,8 +235,8 @@ export default function PromptDetailPage() {
                   ))}
 
                   {/* Info Tab */}
-                  <TabsContent value="info" className="p-6">
-                    <div className="space-y-8">
+                  <TabsContent value="info" className="p-0">
+                    <div className="px-6 space-y-8">
                       {/* How to Use */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 How To Use</h3>
@@ -291,16 +292,16 @@ export default function PromptDetailPage() {
                       </div>
                     </div>
                   </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Tabs>
           </div>
 
           {/* Right Column - Metadata */}
           <div className="lg:col-span-1">
             <div className="space-y-6 sticky top-6">
               {/* Prompt Info */}
-              <Card>
+              <Card className="bg-white border border-[#B0D3F3] shadow-lg">
                 <CardHeader>
                   <CardTitle className="text-lg">Prompt Details</CardTitle>
                 </CardHeader>
@@ -366,7 +367,7 @@ export default function PromptDetailPage() {
 
               {/* Multi-step specific info */}
               {isMultiStep && (
-                <Card>
+                <Card className="bg-white border border-[#B0D3F3] shadow-lg">
                   <CardHeader>
                     <CardTitle className="text-lg">Workflow Overview</CardTitle>
                   </CardHeader>

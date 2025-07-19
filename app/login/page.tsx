@@ -83,7 +83,7 @@ export default function LoginPage() {
           <p className="text-gray-600">Sign in to access your prompt collection</p>
         </div>
 
-        <Card>
+        <Card className="bg-white border border-[#B0D3F3] shadow-lg">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>Enter your credentials to access your account</CardDescription>

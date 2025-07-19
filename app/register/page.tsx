@@ -123,7 +123,7 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <Card>
+        <Card className="bg-white border border-[#B0D3F3] shadow-lg">
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>Create your account to access the platform</CardDescription>

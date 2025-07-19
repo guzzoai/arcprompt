@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">
-            <Card>
+            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <User className="w-5 h-5" />
@@ -223,7 +223,7 @@ export default function SettingsPage() {
 
           {/* Billing Tab */}
           <TabsContent value="billing" className="space-y-6">
-            <Card>
+            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <CreditCard className="w-5 h-5" />

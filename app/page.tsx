@@ -245,7 +245,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {whyArcPrompt.map((item, index) => (
-              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                 <CardContent className="pt-6 text-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <item.icon className="w-6 h-6 text-blue-600" />
@@ -273,7 +273,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredPrompts.map((prompt, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
+              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline">{prompt.category}</Badge>
@@ -325,7 +325,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((category) => (
-              <Card key={category.id} className="hover:shadow-lg transition-all duration-200 hover:-translate-y-1">
+              <Card key={category.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${category.color}`}>
                     <category.icon className="w-6 h-6" />
@@ -369,7 +369,7 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {useCases.map((useCase, index) => (
-              <Card key={index} className="bg-white border-0 shadow-sm hover:shadow-lg transition-shadow">
+              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <useCase.icon className="w-6 h-6 text-blue-600" />

@@ -283,7 +283,7 @@ export default function MyPromptsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="py-2">
+        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
@@ -321,7 +321,7 @@ export default function MyPromptsPage() {
         {/* Prompts Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredPrompts.map((prompt) => (
-            <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
+            <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

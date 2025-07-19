@@ -38,7 +38,7 @@ export default function PricingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="border-2">
+            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl">Free Tier</CardTitle>
                 <CardDescription>Perfect for getting started</CardDescription>
@@ -73,7 +73,7 @@ export default function PricingPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-2 border-blue-500 relative">
+            <Card className="bg-white border border-[#B0D3F3] shadow-lg relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <Badge className="bg-blue-600 text-white">Most Popular</Badge>
               </div>
