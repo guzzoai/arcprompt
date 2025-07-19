@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Database, Wrench, TrendingUp, Star, ChevronRight } from "lucide-react"
+import { Database, Wrench, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
@@ -43,10 +43,17 @@ export default function DashboardPage() {
     return null
   }
 
-  const recommendedTools = [
+  const popularTools = [
     { name: "ChatGPT", category: "General AI", description: "Versatile conversational AI" },
     { name: "Claude", category: "Writing", description: "Advanced text generation" },
     { name: "Midjourney", category: "Image", description: "AI image generation" },
+  ]
+
+  const latestPrompts = [
+    { id: 1, slug: "viral-content-creator", title: "Viral Content Creator", category: "Social Media", timeAgo: "2 hours ago" },
+    { id: 2, slug: "facebook-ad-campaign-builder", title: "Facebook Ad Campaign Builder", category: "Advertising", timeAgo: "5 hours ago" },
+    { id: 3, slug: "email-subject-line-optimizer", title: "Email Subject Line Optimizer", category: "Writing", timeAgo: "1 day ago" },
+    { id: 4, slug: "product-description-writer", title: "Product Description Writer", category: "E-commerce", timeAgo: "2 days ago" },
   ]
 
   // const nextLessons = [
@@ -77,7 +84,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Saved Prompts</CardTitle>
@@ -88,51 +95,40 @@ export default function DashboardPage() {
               <p className="text-xs text-gray-600 mt-2">Ready to use anytime</p>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Tools Explored</CardTitle>
-              <Wrench className="h-4 w-4 text-purple-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">12</div>
-              <p className="text-xs text-gray-600 mt-2">AI tools discovered</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Learning Streak</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">7 days</div>
-              <p className="text-xs text-gray-600 mt-2">Keep it up! 🔥</p>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Continue Learning */}
 
-          {/* Recent Prompts */}
+          {/* Latest Prompts */}
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Database className="w-5 h-5 text-teal-600" />
-                  <span>Recently Accessed Prompts</span>
+                  <span>Latest Prompts</span>
                 </CardTitle>
-                <CardDescription>Your most recent prompt interactions</CardDescription>
+                <CardDescription>Recently added to the vault</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="text-center py-8 text-gray-500">
-                    <Database className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-                    <p>No prompts accessed yet</p>
-                    <p className="text-sm">Start exploring to see your recent prompts here</p>
-                  </div>
+                  {latestPrompts.map((prompt) => (
+                    <div key={prompt.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex-1">
+                        <h4 className="font-medium text-sm">{prompt.title}</h4>
+                        <div className="flex items-center space-x-2 mt-1">
+                          <Badge variant="outline" className="text-xs">{prompt.category}</Badge>
+                          <span className="text-xs text-gray-500">{prompt.timeAgo}</span>
+                        </div>
+                      </div>
+                      <Link href={`/prompts/${prompt.slug}`}>
+                        <Button size="sm" variant="outline">
+                          View
+                        </Button>
+                      </Link>
+                    </div>
+                  ))}
                 </div>
                 <div className="mt-4">
                   <Link href="/prompts">
@@ -148,18 +144,18 @@ export default function DashboardPage() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            {/* Recommended Tools */}
+            {/* Popular Tools */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <Wrench className="w-5 h-5 text-purple-600" />
-                  <span>Recommended Tools</span>
+                  <span>Popular Tools</span>
                 </CardTitle>
-                <CardDescription>Based on your learning progress</CardDescription>
+                <CardDescription>Most used by our community</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recommendedTools.map((tool, index) => (
+                  {popularTools.map((tool, index) => (
                     <div key={index} className="p-3 border rounded-lg hover:bg-gray-50 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-sm">{tool.name}</h4>

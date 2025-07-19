@@ -1,0 +1,34 @@
+export interface PromptStep {
+  stepNumber: number
+  title: string
+  content: string
+  estimatedTime?: string
+}
+
+export interface PromptDetail {
+  id: string
+  title: string
+  shortDescription: string
+  category: string
+  complexity: "Beginner" | "Intermediate" | "Advanced"
+  type: "FREE" | "PRO"
+  platforms: string[]
+  estimatedTime?: string
+  viewCount: number
+  modifiedDate: string
+  isBookmarked?: boolean
+  
+  // Content
+  singlePrompt?: string // For single-step prompts
+  steps?: PromptStep[] // For multi-step prompts
+  
+  // Info tab content
+  howToUse: string[]
+  whatYouGet: string[]
+  expectedResults: string[]
+  variations: string[]
+  
+  // Multi-step specific
+  workflowOverview?: string
+  whatYouCreate?: string
+}

@@ -14,10 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
-import { Database, Wrench, Settings, User, LogOut, Menu, X, Zap, Home, CreditCard } from "lucide-react"
+import { Database, Wrench, User, LogOut, Menu, X, Zap, Home } from "lucide-react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
+import { useAuth } from "@/lib/auth-context"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -26,6 +27,28 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
+  const { user, signOut } = useAuth()
+
+  const handleSignOut = async () => {
+    await signOut()
+    router.push('/login')
+  }
+
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+    }
+    if (user?.email) {
+      return user.email.split('@')[0]
+    }
+    return 'User'
+  }
+
+  const getUserInitials = () => {
+    const name = getUserDisplayName()
+    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2)
+  }
 
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: Home },
@@ -146,39 +169,27 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src="/placeholder.svg?height=32&width=32" alt="User" />
-                      <AvatarFallback>AJ</AvatarFallback>
+                      <AvatarImage src={user?.user_metadata?.avatar_url} alt="User" />
+                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Alex Johnson</p>
-                      <p className="text-xs leading-none text-gray-600">alex@example.com</p>
+                      <p className="text-sm font-medium leading-none">{getUserDisplayName()}</p>
+                      <p className="text-xs leading-none text-gray-600">{user?.email}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center">
+                    <Link href="/settings/profile" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings/billing" className="flex items-center">
-                      <CreditCard className="mr-2 h-4 w-4" />
-                      <span>Billing</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="flex items-center">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleSignOut}>
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
