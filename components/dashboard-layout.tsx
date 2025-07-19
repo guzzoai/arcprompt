@@ -162,8 +162,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                Pro Member
+              <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+                Free Member
               </Badge>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -183,7 +183,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/settings/profile" className="flex items-center">
+                    <Link href="/settings" className="flex items-center">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>

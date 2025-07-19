@@ -283,21 +283,21 @@ export default function MyPromptsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="py-2">
+          <CardContent className="p-3">
+            <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   placeholder="Search your prompts..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <Select value={selectedFolder} onValueChange={setSelectedFolder}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 h-10">
                     <Folder className="w-4 h-4 mr-2" />
                     <SelectValue placeholder="Folder" />
                   </SelectTrigger>
@@ -309,7 +309,7 @@ export default function MyPromptsPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Button variant="outline">
+                <Button variant="outline" className="h-10">
                   <Download className="w-4 h-4 mr-2" />
                   Export All
                 </Button>
@@ -354,10 +354,6 @@ export default function MyPromptsPage() {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <p className="text-sm text-gray-700 line-clamp-3">{prompt.content}</p>
-                </div>
-
                 <div className="flex flex-wrap gap-1">
                   {prompt.tags.map((tag) => (
                     <Badge key={tag} variant="secondary" className="text-xs">
@@ -377,14 +373,10 @@ export default function MyPromptsPage() {
                   </div>
                 </div>
 
-                <div className="flex space-x-2 pt-2">
-                  <Button size="sm" variant="outline" className="flex-1">
+                <div className="flex justify-center pt-2">
+                  <Button size="sm" className="w-full">
                     <Eye className="w-4 h-4 mr-1" />
-                    Preview
-                  </Button>
-                  <Button size="sm" className="flex-1">
-                    <Copy className="w-4 h-4 mr-1" />
-                    Copy
+                    View Prompt
                   </Button>
                 </div>
               </CardContent>

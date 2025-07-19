@@ -122,15 +122,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const signInWithGoogle = async () => {
-    const redirectTo = `${window.location.origin}/auth/callback`
+    console.log('🔐 Starting Google OAuth sign in')
     
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
     
+    console.log('🔐 Google OAuth initiation result:', error ? 'Error: ' + error.message : 'Success')
     return { error }
   }
 

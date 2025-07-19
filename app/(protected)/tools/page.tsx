@@ -23,6 +23,19 @@ import {
   Brain,
   Zap,
   Users,
+  MessageSquare,
+  Sparkles,
+  Github,
+  Bot,
+  Camera,
+  PieChart,
+  Music,
+  MonitorPlay,
+  Lightbulb,
+  Shield,
+  Database,
+  Type,
+  Headphones,
 } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 
@@ -30,6 +43,33 @@ export default function ToolsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedRole, setSelectedRole] = useState("all")
+
+  // Function to get icon for each tool
+  const getToolIcon = (toolName: string) => {
+    const iconMap: { [key: string]: any } = {
+      "ChatGPT": MessageSquare,
+      "Midjourney": Sparkles,
+      "GitHub Copilot": Github,
+      "Claude": Bot,
+      "DALL-E 3": Camera,
+      "Tableau GPT": PieChart,
+      "Speechify": Headphones,
+      "Loom": MonitorPlay,
+      "Figma": Palette,
+      "Notion AI": FileText,
+      "Grammarly": Type,
+      "Zapier": Zap,
+      "Canva": Palette,
+      "Stable Diffusion": ImageIcon,
+      "Perplexity": Brain,
+      "Runway ML": Video,
+      "ElevenLabs": Mic,
+      "Copy.ai": Type,
+      "Jasper": FileText,
+      "Otter.ai": Mic,
+    }
+    return iconMap[toolName] || Wrench
+  }
 
   const categories = [
     { id: "all", name: "All Categories", count: 100, icon: Wrench },
@@ -262,21 +302,21 @@ export default function ToolsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="py-2">
+          <CardContent className="p-3">
+            <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   placeholder="Search tools, categories, or use cases..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 h-10">
                     <Filter className="w-4 h-4 mr-2" />
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
@@ -290,7 +330,7 @@ export default function ToolsPage() {
                 </Select>
 
                 <Select value={selectedRole} onValueChange={setSelectedRole}>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 h-10">
                     <SelectValue placeholder="Role" />
                   </SelectTrigger>
                   <SelectContent>
@@ -344,7 +384,10 @@ export default function ToolsPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <img src={tool.logo || "/placeholder.svg"} alt={tool.name} className="w-8 h-8 rounded" />
+                          {(() => {
+                            const IconComponent = getToolIcon(tool.name)
+                            return <IconComponent className="w-8 h-8 text-gray-600" />
+                          })()}
                         </div>
                         <div>
                           <CardTitle className="text-lg flex items-center space-x-2">
@@ -414,7 +457,10 @@ export default function ToolsPage() {
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
                         <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                          <img src={tool.logo || "/placeholder.svg"} alt={tool.name} className="w-8 h-8 rounded" />
+                          {(() => {
+                            const IconComponent = getToolIcon(tool.name)
+                            return <IconComponent className="w-8 h-8 text-gray-600" />
+                          })()}
                         </div>
                         <div>
                           <CardTitle className="text-lg flex items-center space-x-2">

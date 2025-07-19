@@ -9,8 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { useAuth } from "@/lib/auth-context"
 
 export default function PromptsPage() {
+  const { user } = useAuth()
+  
+  // For demo purposes, treating all users as free - can be changed based on user.user_metadata
+  const isFreePlan = true // Change this logic based on your user plan detection
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
@@ -182,21 +187,21 @@ export default function PromptsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col lg:flex-row gap-4">
+        <Card className="py-2">
+          <CardContent className="p-3">
+            <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
                   placeholder="Search prompts, categories, or tags..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-48">
+                  <SelectTrigger className="w-48 h-10">
                     <Filter className="w-4 h-4 mr-2" />
                     <SelectValue placeholder="Category" />
                   </SelectTrigger>
@@ -210,7 +215,7 @@ export default function PromptsPage() {
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-40">
+                  <SelectTrigger className="w-40 h-10">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -236,7 +241,7 @@ export default function PromptsPage() {
           <TabsContent value="all" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {sortedPrompts.map((prompt) => (
-                <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
+                <Card key={prompt.id} className="hover:shadow-lg transition-shadow flex flex-col h-[300px]">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -247,55 +252,42 @@ export default function PromptsPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleSavePrompt(prompt.id)}
-                        className={savedPrompts.includes(prompt.id) ? "text-yellow-600" : "text-gray-400"}
+                        className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
                       >
                         {savedPrompts.includes(prompt.id) ? (
-                          <Heart className="w-4 h-4 fill-current" />
+                          <Bookmark className="w-4 h-4 fill-current" />
                         ) : (
-                          <Heart className="w-4 h-4" />
+                          <Bookmark className="w-4 h-4" />
                         )}
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <Badge variant="outline">{prompt.category}</Badge>
-                      <div className="flex items-center space-x-4 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <Eye className="w-3 h-3" />
-                          <span>{prompt.usage}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span>{prompt.rating}</span>
-                        </div>
+                  <CardContent className="space-y-4 flex-1 flex flex-col justify-between">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <Badge variant="outline">{prompt.category}</Badge>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1">
+                        {prompt.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 rounded-lg p-3">
-                      <p className="text-sm text-gray-700 line-clamp-3">{prompt.preview}</p>
-                    </div>
-
-                    <div className="flex flex-wrap gap-1">
-                      {prompt.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center justify-between pt-2 border-t">
-                      <div className="text-xs text-gray-500">by {prompt.author}</div>
-                      <div className="flex space-x-2">
-                        <Button size="sm" variant="outline">
+                    <div className="flex justify-center pt-2 border-t">
+                      {isFreePlan ? (
+                        <Button size="sm" className="w-full bg-green-600 hover:bg-green-700 text-white">
+                          🔒 Unlock Prompt
+                        </Button>
+                      ) : (
+                        <Button size="sm" className="w-full">
                           <Eye className="w-4 h-4 mr-1" />
-                          Preview
+                          View Prompt
                         </Button>
-                        <Button size="sm">
-                          <Copy className="w-4 h-4 mr-1" />
-                          Copy
-                        </Button>
-                      </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
