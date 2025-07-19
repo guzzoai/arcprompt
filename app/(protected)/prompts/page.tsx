@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye, Lock } from "lucide-react"
+import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye, Lock, Megaphone, Code, PenTool, Briefcase, Palette, BarChart3, GraduationCap, Share2 } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
 
@@ -21,6 +21,21 @@ export default function PromptsPage() {
   const isPromptUnlocked = (promptId: number) => {
     // Make prompts with IDs 1, 3, and 5 unlocked for demo
     return [1, 3, 5].includes(promptId)
+  }
+
+  // Function to get category icon
+  const getCategoryIcon = (category: string) => {
+    const iconMap: { [key: string]: React.ReactNode } = {
+      "Marketing": <Megaphone className="w-5 h-5 text-[#2563EB]" />,
+      "Coding": <Code className="w-5 h-5 text-[#2563EB]" />,
+      "Writing": <PenTool className="w-5 h-5 text-[#2563EB]" />,
+      "Business": <Briefcase className="w-5 h-5 text-[#2563EB]" />,
+      "Creative": <Palette className="w-5 h-5 text-[#2563EB]" />,
+      "Analysis": <BarChart3 className="w-5 h-5 text-[#2563EB]" />,
+      "Education": <GraduationCap className="w-5 h-5 text-[#2563EB]" />,
+      "Social Media": <Share2 className="w-5 h-5 text-[#2563EB]" />
+    }
+    return iconMap[category] || <Database className="w-5 h-5 text-[#2563EB]" />
   }
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -247,15 +262,27 @@ export default function PromptsPage() {
           <TabsContent value="all" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {sortedPrompts.map((prompt) => (
-                <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col h-[300px] gap-0">
+                <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                   <CardHeader className="pb-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <CardTitle className="text-lg leading-tight">{prompt.title}</CardTitle>
-                        <div className="mt-2">
+                        <CardTitle className="text-lg leading-tight flex items-start gap-3">
+                          <div className="flex-shrink-0 mt-0.5">
+                            {getCategoryIcon(prompt.category)}
+                          </div>
+                          <span>{prompt.title}</span>
+                        </CardTitle>
+                        <div className="mt-2 ml-8">
                           <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
                         </div>
-                        <CardDescription className="line-clamp-2">{prompt.description}</CardDescription>
+                        <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                        <div className="flex flex-wrap gap-1 ml-8 mt-2">
+                          {prompt.tags.map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                       <Button
                         variant="ghost"
@@ -271,28 +298,18 @@ export default function PromptsPage() {
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex-1 flex flex-col justify-between p-0 pb-4 px-6">
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {prompt.tags.map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-
-                    <div className="flex justify-center pt-2 border-t mt-3">
-                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
-                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
-                          <Lock className="w-4 h-4 mr-2" />
-                          Unlock Prompt
-                        </Button>
-                      ) : (
-                        <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
-                          <Eye className="w-4 h-4 mr-2" />
-                          View Prompt
-                        </Button>
-                      )}
-                    </div>
+                  <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
+                    {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                      <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                        <Lock className="w-4 h-4 mr-2" />
+                        Unlock Prompt
+                      </Button>
+                    ) : (
+                      <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                        <Eye className="w-4 h-4 mr-2" />
+                        View Prompt
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ))}
