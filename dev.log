@@ -1,0 +1,109 @@
+
+> arcprompt@0.1.0 dev
+> next dev --turbopack
+
+   ▲ Next.js 15.2.4 (Turbopack)
+   - Local:        http://localhost:3000
+   - Network:      http://10.255.255.254:3000
+   - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Compiled in 1438ms
+ ✓ Ready in 12.4s
+ ○ Compiling /auth/callback ...
+ ✓ Compiled /auth/callback in 2.3s
+ GET /auth/callback?code=700f9a47-8055-4879-b861-eb0dee562dd9 307 in 3194ms
+ ○ Compiling /dashboard ...
+ ✓ Compiled /dashboard in 12.2s
+ GET /dashboard 307 in 12847ms
+ ○ Compiling /login ...
+ ✓ Compiled /login in 1490ms
+ GET /login 200 in 1755ms
+ ○ Compiling /_not-found/page ...
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 875ms
+ ✓ Compiled /_not-found/page in 1198ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 1387ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1442ms
+ GET / 200 in 1704ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 226ms
+ GET /login 200 in 267ms
+ ○ Compiling /register ...
+ ✓ Compiled /register in 1265ms
+ GET /register 200 in 1475ms
+ GET /register 200 in 249ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 273ms
+ GET /register 200 in 287ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 282ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 260ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 234ms
+ GET /dashboard 200 in 271ms
+ GET /login 200 in 273ms
+ GET /login 200 in 252ms
+ GET /register 200 in 271ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 221ms
+ GET /dashboard 200 in 264ms
+ GET /login 200 in 260ms
+ GET /login 200 in 249ms
+ GET /register 200 in 256ms
+ GET /dashboard 200 in 263ms
+ GET /login 200 in 255ms
+ GET /login 200 in 246ms
+ GET /register 200 in 261ms
+ GET /dashboard 200 in 266ms
+ GET /login 200 in 262ms
+ GET /login 200 in 243ms
+ GET / 200 in 289ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 200ms
+ GET / 200 in 288ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 194ms
+ GET /login 200 in 270ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 215ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 204ms
+ GET /register 200 in 250ms
+ GET /dashboard 200 in 256ms
+ GET /login 200 in 253ms
+ GET /login 200 in 245ms
+ GET /?code=67bdcb46-21c5-467e-bcd2-51d02be8ed33 200 in 309ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 220ms
+ GET /login 200 in 255ms
+ GET /dashboard 200 in 261ms
+ GET /login 200 in 250ms
+ GET /login 200 in 256ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 242ms
+ GET /dashboard 200 in 259ms
+ GET /login 200 in 253ms
+ GET /login 200 in 239ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 255ms
+ GET /login 200 in 265ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 268ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 256ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 213ms
+ GET /dashboard 200 in 264ms
+ GET /login 200 in 261ms
+ GET /login 200 in 244ms
+ GET / 200 in 296ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 207ms
+ GET /login 200 in 248ms
+ GET /dashboard 200 in 258ms
+ GET /login 200 in 241ms
+ GET /login 200 in 220ms
+ GET /login 200 in 248ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 215ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 201ms
+ GET /login 200 in 265ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 219ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 205ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 231ms
+ GET /login 200 in 266ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 262ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 268ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 213ms
+ GET /login 200 in 263ms
+ GET /.well-known/appspecific/com.chrome.devtools.json 404 in 291ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 270ms
+ GET /favicon.ico?favicon.45db1c09.ico 200 in 211ms
+ GET /dashboard 200 in 270ms
+ GET /login 200 in 268ms
+ GET /login 200 in 270ms
+[?25h

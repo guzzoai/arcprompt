@@ -41,13 +41,17 @@ export default function LoginPage() {
     setError("")
 
     try {
+      console.log('🔓 Login form: Starting login for:', email)
       const { error } = await signIn(email, password)
       if (error) {
+        console.log('🔓 Login form: Error:', error.message)
         setError(error.message)
       } else {
+        console.log('🔓 Login form: Success, redirecting to dashboard')
         router.push("/dashboard")
       }
-    } catch {
+    } catch (err) {
+      console.log('🔓 Login form: Unexpected error:', err)
       setError("An unexpected error occurred")
     } finally {
       setIsLoading(false)

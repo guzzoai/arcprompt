@@ -67,16 +67,22 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
+      console.log('🚀 Starting registration for:', formData.email)
       const { error } = await signUp(formData.email, formData.password, {
         full_name: formData.name
       })
       
       if (error) {
+        console.log('❌ Registration error:', error)
         setError(error.message)
       } else {
-        router.push("/dashboard")
+        console.log('✅ Registration successful - check email for confirmation')
+        setError("")
+        // Show success message instead of redirecting
+        alert("Registration successful! Please check your email and click the confirmation link before logging in.")
       }
-    } catch {
+    } catch (err) {
+      console.log('💥 Unexpected registration error:', err)
       setError("An unexpected error occurred")
     } finally {
       setIsLoading(false)
