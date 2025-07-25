@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye, Lock, Megaphone, Code, PenTool, Briefcase, Palette, BarChart3, GraduationCap, Share2 } from "lucide-react"
+import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
 
@@ -305,10 +306,12 @@ export default function PromptsPage() {
                         Unlock Prompt
                       </Button>
                     ) : (
-                      <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Prompt
-                      </Button>
+                      <Link href={`/prompts/${prompt.id}`} className="w-full">
+                        <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Prompt
+                        </Button>
+                      </Link>
                     )}
                   </CardContent>
                 </Card>
@@ -321,63 +324,56 @@ export default function PromptsPage() {
               {sortedPrompts
                 .filter((prompt) => savedPrompts.includes(prompt.id))
                 .map((prompt) => (
-                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
-                    <CardHeader>
+                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                    <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <CardTitle className="text-lg leading-tight">{prompt.title}</CardTitle>
-                          <CardDescription className="mt-2 line-clamp-2">{prompt.description}</CardDescription>
+                          <CardTitle className="text-lg leading-tight flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-0.5">
+                              {getCategoryIcon(prompt.category)}
+                            </div>
+                            <span>{prompt.title}</span>
+                          </CardTitle>
+                          <div className="mt-2 ml-8">
+                            <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                          </div>
+                          <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                          <div className="flex flex-wrap gap-1 ml-8 mt-2">
+                            {prompt.tags.map((tag) => (
+                              <Badge key={tag} variant="secondary" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleSavePrompt(prompt.id)}
-                          className="text-yellow-600"
+                          className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
                         >
-                          <Heart className="w-4 h-4 fill-current" />
+                          {savedPrompts.includes(prompt.id) ? (
+                            <Bookmark className="w-4 h-4 fill-current" />
+                          ) : (
+                            <Bookmark className="w-4 h-4" />
+                          )}
                         </Button>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">{prompt.category}</Badge>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <div className="flex items-center space-x-1">
-                            <Eye className="w-3 h-3" />
-                            <span>{prompt.usage}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                            <span>{prompt.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <p className="text-sm text-gray-700 line-clamp-3">{prompt.preview}</p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {prompt.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2 border-t">
-                        <div className="text-xs text-gray-500">by {prompt.author}</div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4 mr-1" />
-                            Preview
+                    <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
+                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                          <Lock className="w-4 h-4 mr-2" />
+                          Unlock Prompt
+                        </Button>
+                      ) : (
+                        <Link href={`/prompts/${prompt.id}`} className="w-full">
+                          <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Prompt
                           </Button>
-                          <Button size="sm">
-                            <Copy className="w-4 h-4 mr-1" />
-                            Copy
-                          </Button>
-                        </div>
-                      </div>
+                        </Link>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
@@ -397,70 +393,59 @@ export default function PromptsPage() {
                 .sort((a, b) => b.usage - a.usage)
                 .slice(0, 9)
                 .map((prompt) => (
-                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
-                    <CardHeader>
+                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                    <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <CardTitle className="text-lg leading-tight flex items-center space-x-2">
-                            <span>{prompt.title}</span>
-                            <TrendingUp className="w-4 h-4 text-green-600" />
+                          <CardTitle className="text-lg leading-tight flex items-start gap-3">
+                            <div className="flex-shrink-0 mt-0.5">
+                              {getCategoryIcon(prompt.category)}
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <span>{prompt.title}</span>
+                              <TrendingUp className="w-4 h-4 text-green-600" />
+                            </div>
                           </CardTitle>
-                          <CardDescription className="mt-2 line-clamp-2">{prompt.description}</CardDescription>
+                          <div className="mt-2 ml-8">
+                            <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                          </div>
+                          <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                          <div className="flex flex-wrap gap-1 ml-8 mt-2">
+                            {prompt.tags.map((tag) => (
+                              <Badge key={tag} variant="secondary" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleSavePrompt(prompt.id)}
-                          className={savedPrompts.includes(prompt.id) ? "text-yellow-600" : "text-gray-400"}
+                          className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
                         >
                           {savedPrompts.includes(prompt.id) ? (
-                            <Heart className="w-4 h-4 fill-current" />
+                            <Bookmark className="w-4 h-4 fill-current" />
                           ) : (
-                            <Heart className="w-4 h-4" />
+                            <Bookmark className="w-4 h-4" />
                           )}
                         </Button>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Badge variant="outline">{prompt.category}</Badge>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600">
-                          <div className="flex items-center space-x-1">
-                            <Eye className="w-3 h-3" />
-                            <span>{prompt.usage}</span>
-                          </div>
-                          <div className="flex items-center space-x-1">
-                            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                            <span>{prompt.rating}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-gray-50 rounded-lg p-3">
-                        <p className="text-sm text-gray-700 line-clamp-3">{prompt.preview}</p>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1">
-                        {prompt.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-
-                      <div className="flex items-center justify-between pt-2 border-t">
-                        <div className="text-xs text-gray-500">by {prompt.author}</div>
-                        <div className="flex space-x-2">
-                          <Button size="sm" variant="outline">
-                            <Eye className="w-4 h-4 mr-1" />
-                            Preview
+                    <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
+                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                          <Lock className="w-4 h-4 mr-2" />
+                          Unlock Prompt
+                        </Button>
+                      ) : (
+                        <Link href={`/prompts/${prompt.id}`} className="w-full">
+                          <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Prompt
                           </Button>
-                          <Button size="sm">
-                            <Copy className="w-4 h-4 mr-1" />
-                            Copy
-                          </Button>
-                        </div>
-                      </div>
+                        </Link>
+                      )}
                     </CardContent>
                   </Card>
                 ))}
