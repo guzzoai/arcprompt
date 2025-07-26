@@ -4,12 +4,16 @@ import { createClient } from '@supabase/supabase-js'
 
 // Use environment variables
 const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseKey = process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_PUBLISHABLE_KEY
 
 if (!supabaseUrl || !supabaseKey) {
   console.error('❌ Missing required environment variables:')
   console.error('   SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)')
-  console.error('   SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY)')
+  console.error('   SUPABASE_ANON_KEY (or NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_PUBLISHABLE_KEY for new API keys)')
+  console.error('')
+  console.error('   For new Supabase API keys, use:')
+  console.error('   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co')
+  console.error('   SUPABASE_PUBLISHABLE_KEY=sb_publishable_...')
   process.exit(1)
 }
 
