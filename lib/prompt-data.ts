@@ -1,233 +1,266 @@
-import { PromptDetail } from "@/types/prompt"
+import { createClient } from '@supabase/supabase-js'
+import { PromptDetail, PromptStep } from "@/types/prompt"
 
-export const promptsData: PromptDetail[] = [
-  {
-    id: "viral-content-creator",
-    title: "Viral Content Creator",
-    shortDescription: "Generates scroll-stopping post ideas with proven psychological triggers that drive massive engagement across any social platform.",
-    category: "Social Media",
-    complexity: "Beginner",
-    type: "FREE",
-    platforms: ["ChatGPT", "Claude", "Gemini"],
-    estimatedTime: "5-10 minutes",
-    viewCount: 1247,
-    modifiedDate: "2 days ago",
-    singlePrompt: `ROLE: You are a viral content strategist with expertise in social psychology and engagement patterns.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-TASK: Generate 10 scroll-stopping post ideas for [PLATFORM] that use proven psychological triggers to maximize engagement.
+const supabase = createClient(supabaseUrl, supabaseKey)
 
-CONTEXT: 
-- Target audience: [DESCRIBE YOUR AUDIENCE]
-- Business/niche: [YOUR BUSINESS/NICHE]
-- Content goal: [AWARENESS/SALES/EDUCATION/ENTERTAINMENT]
+// Helper function to transform database row to PromptDetail
+function transformDatabasePrompt(dbPrompt: Record<string, unknown>): PromptDetail {
+  const steps: PromptStep[] = (dbPrompt.steps_data as Array<{
+    stepNumber: number
+    title: string  
+    content: string
+    estimatedTime?: string
+  }> || []).map((step) => ({
+    stepNumber: step.stepNumber,
+    title: step.title,
+    content: step.content,
+    estimatedTime: step.estimatedTime
+  })) || []
 
-REQUIREMENTS:
-1. Use psychological triggers (curiosity gap, social proof, controversy, emotion)
-2. Include specific hooks that stop the scroll
-3. Provide engagement-boosting elements (questions, calls-to-action)
-4. Optimize for platform-specific features and algorithms
-5. Include content variations (images, carousels, videos)
-
-OUTPUT FORMAT:
-For each idea provide:
-- Hook/Opening line
-- Main content structure  
-- Psychological trigger used
-- Engagement elements
-- Platform optimization tips
-
-Make each idea unique and immediately actionable.`,
-    howToUse: [
-      "Copy the prompt and paste it into your AI tool of choice",
-      "Replace [PLATFORM] with your target social media platform", 
-      "Fill in your target audience, business niche, and content goal",
-      "Run the prompt to get 10 viral post ideas",
-      "Select the best ideas and customize them for your brand voice"
-    ],
-    whatYouGet: [
-      "10 unique, scroll-stopping post ideas tailored to your niche",
-      "Psychological triggers explained for each post concept",
-      "Platform-specific optimization tips",
-      "Ready-to-use hooks and engagement elements",
-      "Content format variations (text, image, video suggestions)"
-    ],
-    expectedResults: [
-      "10x higher engagement rates compared to standard posts",
-      "Increased follower growth from viral content",
-      "Better understanding of psychological triggers that work",
-      "More saves, shares, and comments on your content",
-      "Improved brand awareness and reach"
-    ],
-    variations: [
-      "Adapt for specific industries (fitness, business, lifestyle)",
-      "Focus on single platforms (Instagram vs TikTok vs LinkedIn)",
-      "Create series content or content campaigns",
-      "Generate holiday or seasonal viral content",
-      "Develop brand-specific viral content templates"
-    ]
-  },
-  {
-    id: "facebook-ad-campaign-builder",
-    title: "Facebook Ad Campaign Builder",
-    shortDescription: "4-step comprehensive workflow that creates high-converting Facebook ad campaigns from strategy through optimization.",
-    category: "Advertising",
-    complexity: "Intermediate", 
-    type: "PRO",
-    platforms: ["ChatGPT", "Claude"],
-    estimatedTime: "30-45 minutes",
-    viewCount: 892,
-    modifiedDate: "1 week ago",
-    workflowOverview: "This multi-step workflow takes you through the complete Facebook ad campaign creation process, from initial strategy development to final optimization recommendations.",
-    whatYouCreate: "A complete Facebook ad campaign including audience targeting, ad copy, creative briefs, bidding strategy, and optimization plan.",
-    steps: [
-      {
-        stepNumber: 1,
-        title: "Campaign Strategy & Audience Research",
-        estimatedTime: "10-15 minutes",
-        content: `ROLE: You are a Facebook advertising strategist with expertise in audience research and campaign planning.
-
-TASK: Develop a comprehensive Facebook ad campaign strategy for [BUSINESS TYPE] promoting [PRODUCT/SERVICE].
-
-BUSINESS CONTEXT:
-- Business: [YOUR BUSINESS]
-- Product/Service: [WHAT YOU'RE PROMOTING]  
-- Budget: [MONTHLY AD BUDGET]
-- Goal: [AWARENESS/LEADS/SALES/APP INSTALLS]
-- Target market: [DESCRIBE YOUR IDEAL CUSTOMER]
-
-DELIVERABLES:
-1. Campaign objective recommendation
-2. 3 detailed audience segments with:
-   - Demographics and psychographics
-   - Interests and behaviors
-   - Estimated audience size
-   - Why this audience will convert
-3. Budget allocation strategy
-4. Campaign structure recommendations
-5. Key performance indicators (KPIs) to track
-
-Provide detailed reasoning for each recommendation.`
-      },
-      {
-        stepNumber: 2,
-        title: "Ad Copy & Creative Strategy",
-        estimatedTime: "15-20 minutes", 
-        content: `ROLE: You are a Facebook ad copywriter and creative strategist specializing in high-converting ad content.
-
-TASK: Create compelling ad copy and creative briefs using the audience insights from Step 1.
-
-INPUT FROM STEP 1: [PASTE YOUR AUDIENCE SEGMENTS AND STRATEGY]
-
-DELIVERABLES:
-1. 5 different ad copy variations for each audience segment including:
-   - Attention-grabbing headlines
-   - Compelling ad text (under 125 characters for mobile)
-   - Strong call-to-action buttons
-   - Value propositions tailored to each audience
-2. Creative briefs for each ad variation:
-   - Image/video concept descriptions
-   - Visual style guidelines
-   - Key elements to include/avoid
-3. A/B testing recommendations
-4. Platform-specific optimizations (Feed vs Stories vs Reels)
-
-Focus on emotional triggers and clear value propositions.`
-      },
-      {
-        stepNumber: 3,
-        title: "Campaign Setup & Targeting Configuration",
-        estimatedTime: "10-15 minutes",
-        content: `ROLE: You are a Facebook Ads Manager expert specializing in campaign setup and targeting optimization.
-
-TASK: Provide detailed campaign setup instructions and targeting configurations.
-
-INPUT: [PASTE STRATEGY AND AD COPY FROM PREVIOUS STEPS]
-
-DELIVERABLES:
-1. Complete campaign structure:
-   - Campaign naming conventions
-   - Ad set organization
-   - Budget distribution recommendations
-2. Detailed targeting setup for each audience:
-   - Exact demographic settings
-   - Interest targeting recommendations  
-   - Behavior targeting options
-   - Exclusion audiences to avoid overlap
-3. Placement recommendations:
-   - Best placements for your objectives
-   - Placement-specific creative requirements
-4. Bidding strategy recommendations:
-   - Bid strategy selection reasoning
-   - Budget pacing recommendations
-5. Conversion tracking setup requirements
-
-Include step-by-step setup instructions for Facebook Ads Manager.`
-      },
-      {
-        stepNumber: 4,
-        title: "Launch & Optimization Plan",
-        estimatedTime: "5-10 minutes",
-        content: `ROLE: You are a Facebook advertising analyst focused on campaign optimization and performance improvement.
-
-TASK: Create a comprehensive launch and optimization plan for ongoing campaign success.
-
-DELIVERABLES:
-1. Launch checklist:
-   - Pre-launch verification steps
-   - Testing timeline and methodology
-   - Initial performance benchmarks
-2. Optimization schedule:
-   - Daily monitoring tasks (first week)
-   - Weekly optimization activities  
-   - Monthly performance reviews
-3. Performance analysis framework:
-   - Key metrics to monitor for each objective
-   - Red flags that require immediate action
-   - Success indicators and scaling triggers
-4. Scaling strategy:
-   - When and how to increase budgets
-   - Audience expansion recommendations
-   - Creative refresh timeline
-5. Troubleshooting guide:
-   - Common issues and solutions
-   - Performance improvement tactics
-
-Include specific metrics thresholds for optimization decisions.`
-      }
-    ],
-    howToUse: [
-      "Work through each step sequentially - don't skip ahead",
-      "Complete Step 1 first and use those insights for Step 2",
-      "Save the output from each step to reference in later steps", 
-      "Customize each prompt with your specific business details",
-      "Follow the campaign setup instructions in Facebook Ads Manager",
-      "Use the optimization plan to monitor and improve performance"
-    ],
-    whatYouGet: [
-      "Complete Facebook ad campaign strategy tailored to your business",
-      "Research-backed audience segments with targeting details",
-      "High-converting ad copy and creative briefs for testing",
-      "Step-by-step campaign setup instructions",
-      "Comprehensive optimization and scaling plan",
-      "Performance monitoring framework with specific metrics"
-    ],
-    expectedResults: [
-      "50-80% higher click-through rates vs generic campaigns",
-      "25-40% lower cost per acquisition through better targeting",
-      "Improved campaign performance through systematic optimization",
-      "Better audience insights for future marketing efforts",
-      "Scalable campaign structure for business growth"
-    ],
-    variations: [
-      "Adapt for different business types (e-commerce, B2B, local business)",
-      "Customize for specific campaign objectives (leads vs sales)",
-      "Create seasonal or promotional campaign variations",
-      "Develop retargeting campaign workflows",
-      "Build lookalike audience expansion strategies"
-    ]
+  return {
+    id: dbPrompt.slug as string,
+    title: dbPrompt.title as string,
+    shortDescription: (dbPrompt.short_description || dbPrompt.description) as string,
+    category: (dbPrompt.categories as {name?: string})?.name || 'Uncategorized',
+    complexity: dbPrompt.difficulty_level as "Beginner" | "Intermediate" | "Advanced",
+    type: dbPrompt.prompt_type as "FREE" | "PRO",
+    platforms: (dbPrompt.platforms as string[]) || ['ChatGPT', 'Claude', 'Gemini'],
+    estimatedTime: dbPrompt.estimated_time as string,
+    viewCount: (dbPrompt.usage_count as number) || 0,
+    modifiedDate: formatDate(dbPrompt.updated_at as string),
+    isBookmarked: false, // This would be determined by user favorites
+    
+    // Content
+    content: dbPrompt.content as string,
+    singlePrompt: dbPrompt.workflow_type === 'single' ? dbPrompt.content as string : undefined,
+    steps: dbPrompt.workflow_type === 'multi-step' ? steps : undefined,
+    
+    // Info tab content
+    howToUse: (dbPrompt.how_to_use as string[]) || [],
+    whatYouGet: (dbPrompt.what_you_get as string[]) || [],
+    expectedResults: (dbPrompt.expected_results as string[]) || [],
+    variations: (dbPrompt.variations as string[]) || [],
+    
+    // Additional sections - all extra content from markdown
+    additionalSections: (dbPrompt.additional_sections as Record<string, {
+      title: string
+      content: string
+      order: number
+    }>) || {},
+    
+    // Multi-step specific
+    workflowOverview: dbPrompt.workflow_overview as string,
+    whatYouCreate: dbPrompt.what_you_create as string
   }
-]
-
-export function getPromptById(id: string): PromptDetail | null {
-  return promptsData.find(prompt => prompt.id === id) || null
 }
+
+function formatDate(dateString: string): string {
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffTime = Math.abs(now.getTime() - date.getTime())
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  
+  if (diffDays === 1) return '1 day ago'
+  if (diffDays < 7) return `${diffDays} days ago`
+  if (diffDays < 30) return `${Math.ceil(diffDays / 7)} weeks ago`
+  return `${Math.ceil(diffDays / 30)} months ago`
+}
+
+// Get all prompts with pagination
+export async function getPrompts(options: {
+  page?: number
+  limit?: number
+  category?: string
+  search?: string
+  sortBy?: 'newest' | 'popular' | 'rating'
+} = {}): Promise<{ prompts: PromptDetail[], total: number }> {
+  const { page = 1, limit = 20, category, search, sortBy = 'newest' } = options
+  
+  let query = supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories (
+        name,
+        slug
+      )
+    `)
+    .eq('status', 'published')
+  
+  // Apply filters
+  if (category && category !== 'all') {
+    query = query.eq('categories.slug', category)
+  }
+  
+  if (search) {
+    query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%,short_description.ilike.%${search}%`)
+  }
+  
+  // Apply sorting
+  switch (sortBy) {
+    case 'popular':
+      query = query.order('usage_count', { ascending: false })
+      break
+    case 'rating':
+      query = query.order('rating_avg', { ascending: false })
+      break
+    case 'newest':
+    default:
+      query = query.order('created_at', { ascending: false })
+      break
+  }
+  
+  // Apply pagination
+  const from = (page - 1) * limit
+  const to = from + limit - 1
+  
+  query = query.range(from, to)
+  
+  const { data, error, count } = await query
+  
+  if (error) {
+    console.error('Error fetching prompts:', error)
+    return { prompts: [], total: 0 }
+  }
+  
+  const prompts = data?.map(transformDatabasePrompt) || []
+  
+  return { prompts, total: count || 0 }
+}
+
+// Get a single prompt by ID
+export async function getPromptById(id: string): Promise<PromptDetail | null> {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories (
+        name,
+        slug
+      )
+    `)
+    .eq('slug', id)
+    .eq('status', 'published')
+    .single()
+  
+  if (error || !data) {
+    console.error('Error fetching prompt:', error)
+    return null
+  }
+  
+  return transformDatabasePrompt(data)
+}
+
+// Get popular prompts
+export async function getPopularPrompts(limit: number = 10): Promise<PromptDetail[]> {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories (
+        name,
+        slug
+      )
+    `)
+    .eq('status', 'published')
+    .order('usage_count', { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error('Error fetching popular prompts:', error)
+    return []
+  }
+  
+  return data?.map(transformDatabasePrompt) || []
+}
+
+// Get featured prompts
+export async function getFeaturedPrompts(limit: number = 5): Promise<PromptDetail[]> {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories (
+        name,
+        slug
+      )
+    `)
+    .eq('status', 'published')
+    .eq('featured', true)
+    .order('usage_count', { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error('Error fetching featured prompts:', error)
+    return []
+  }
+  
+  return data?.map(transformDatabasePrompt) || []
+}
+
+// Get latest prompts for dashboard
+export async function getLatestPrompts(limit: number = 4): Promise<PromptDetail[]> {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select(`
+      *,
+      categories (
+        name,
+        slug
+      )
+    `)
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+  
+  if (error) {
+    console.error('Error fetching latest prompts:', error)
+    return []
+  }
+  
+  return data?.map(transformDatabasePrompt) || []
+}
+
+// Get categories
+export async function getCategories(): Promise<Array<{ id: string, name: string, slug: string, count: number }>> {
+  const { data, error } = await supabase
+    .from('categories')
+    .select(`
+      id,
+      name,
+      slug,
+      prompts!inner (
+        id
+      )
+    `)
+    .eq('prompts.status', 'published')
+  
+  if (error) {
+    console.error('Error fetching categories:', error)
+    return []
+  }
+  
+  // Transform and count prompts per category
+  const categoriesWithCount = data?.map(cat => ({
+    id: cat.id,
+    name: cat.name,
+    slug: cat.slug,
+    count: Array.isArray(cat.prompts) ? cat.prompts.length : 0
+  })) || []
+  
+  return categoriesWithCount
+}
+
+// Legacy function for backward compatibility
+export function getPromptByIdSync(_id: string): PromptDetail | null {
+  // This is a legacy function that should be replaced with async version
+  // For now, return null and handle async loading in components
+  console.warn('getPromptByIdSync is deprecated, use getPromptById instead')
+  return null
+}
+
+// Export legacy array for backward compatibility during migration
+export const promptsData: PromptDetail[] = []

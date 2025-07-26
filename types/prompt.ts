@@ -19,6 +19,7 @@ export interface PromptDetail {
   isBookmarked?: boolean
   
   // Content
+  content?: string // Raw content from database
   singlePrompt?: string // For single-step prompts
   steps?: PromptStep[] // For multi-step prompts
   
@@ -27,6 +28,13 @@ export interface PromptDetail {
   whatYouGet: string[]
   expectedResults: string[]
   variations: string[]
+  
+  // Additional sections - all extra content from markdown
+  additionalSections: Record<string, {
+    title: string
+    content: string
+    order: number
+  }>
   
   // Multi-step specific
   workflowOverview?: string

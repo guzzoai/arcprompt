@@ -1,28 +1,36 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Database, Wrench, ChevronRight, Sparkles, TrendingUp, Clock, Star, Plus, Zap } from "lucide-react"
+import { Database, Wrench, ChevronRight, Sparkles, Clock, Plus, Zap } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
+import { getLatestPrompts } from "@/lib/prompt-data"
+import { PromptDetail } from "@/types/prompt"
 
 export default function DashboardPage() {
   const { user } = useAuth()
+  const [latestPrompts, setLatestPrompts] = useState<PromptDetail[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const popularTools = [
-    { name: "ChatGPT", category: "General AI", description: "Versatile conversational AI" },
-    { name: "Claude", category: "Writing", description: "Advanced text generation" },
-    { name: "Midjourney", category: "Image", description: "AI image generation" },
-  ]
 
-  const latestPrompts = [
-    { id: 1, slug: "viral-content-creator", title: "Viral Content Creator", category: "Social Media", timeAgo: "2 hours ago" },
-    { id: 2, slug: "facebook-ad-campaign-builder", title: "Facebook Ad Campaign Builder", category: "Advertising", timeAgo: "5 hours ago" },
-    { id: 3, slug: "email-subject-line-optimizer", title: "Email Subject Line Optimizer", category: "Writing", timeAgo: "1 day ago" },
-    { id: 4, slug: "product-description-writer", title: "Product Description Writer", category: "E-commerce", timeAgo: "2 days ago" },
-  ]
+  useEffect(() => {
+    const loadLatestPrompts = async () => {
+      try {
+        const prompts = await getLatestPrompts(4)
+        setLatestPrompts(prompts)
+      } catch (error) {
+        console.error('Error loading latest prompts:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadLatestPrompts()
+  }, [])
 
   // const nextLessons = [
   //   { id: 1, title: "Advanced Prompt Chaining", chapter: "Chapter 4", duration: "8 min" },
@@ -81,34 +89,51 @@ export default function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="px-6 pb-0 pt-0">
-                <div className="space-y-4">
-                  {latestPrompts.map((prompt, index) => (
-                    <div key={prompt.id} className="group relative flex items-center justify-between p-4 bg-gray-50 border border-[#B0D3F3] rounded-xl hover:bg-gray-100 hover:border-[#2563EB] transition-all duration-300 hover:shadow-md">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#2563EB] rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                      <div className="flex items-center space-x-4 flex-1">
-                        <div className="flex-shrink-0 w-8 h-8 bg-[#B0D3F3] rounded-lg flex items-center justify-center">
-                          <span className="text-sm font-bold text-[#2563EB]">#{index + 1}</span>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, index) => (
+                      <div key={index} className="animate-pulse p-4 bg-gray-50 border border-[#B0D3F3] rounded-xl">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-8 h-8 bg-gray-300 rounded-lg"></div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                            <div className="h-3 bg-gray-300 rounded w-1/2"></div>
+                          </div>
+                          <div className="w-16 h-8 bg-gray-300 rounded"></div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-gray-900 truncate group-hover:text-[#2563EB] transition-colors">{prompt.title}</h4>
-                          <div className="flex items-center space-x-3 mt-2">
-                            <Badge variant="outline" className="text-xs bg-white border-[#B0D3F3] text-[#2563EB] group-hover:bg-[#F3E0B0]/50">{prompt.category}</Badge>
-                            <div className="flex items-center space-x-1 text-xs text-gray-500">
-                              <Clock className="w-3 h-3" />
-                              <span>{prompt.timeAgo}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {latestPrompts.map((prompt, index) => (
+                      <div key={prompt.id} className="group relative flex items-center justify-between p-4 bg-gray-50 border border-[#B0D3F3] rounded-xl hover:bg-gray-100 hover:border-[#2563EB] transition-all duration-300 hover:shadow-md">
+                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#2563EB] rounded-l-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="flex items-center space-x-4 flex-1">
+                          <div className="flex-shrink-0 w-8 h-8 bg-[#B0D3F3] rounded-lg flex items-center justify-center">
+                            <span className="text-sm font-bold text-[#2563EB]">#{index + 1}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-gray-900 truncate group-hover:text-[#2563EB] transition-colors">{prompt.title}</h4>
+                            <div className="flex items-center space-x-3 mt-2">
+                              <Badge variant="outline" className="text-xs bg-white border-[#B0D3F3] text-[#2563EB] group-hover:bg-[#F3E0B0]/50">{prompt.category}</Badge>
+                              <div className="flex items-center space-x-1 text-xs text-gray-500">
+                                <Clock className="w-3 h-3" />
+                                <span>{prompt.modifiedDate}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
+                        <Link href={`/prompts/${prompt.id}`}>
+                          <Button size="sm" className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white shadow-md">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                        </Link>
                       </div>
-                      <Link href={`/prompts/${prompt.slug}`}>
-                        <Button size="sm" className="bg-[#2563EB] hover:bg-[#1d4ed8] text-white shadow-md">
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          View
-                        </Button>
-                      </Link>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
                 <div className="mt-6">
                   <Link href="/prompts">
                     <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
