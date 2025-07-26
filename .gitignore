@@ -33,9 +33,30 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# security - sensitive files
+**/*secret*
+**/*private*
+**/*token*
+**/*jwt*
+**/*key*
+**/*password*
+**/*auth*
+**/config/secrets*
+**/config/private*
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# temp and backup files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# logs with potential sensitive data
+*.log
+logs/

@@ -3,8 +3,15 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Use environment variables for demo user creation
-const supabaseUrl = 'https://swpwvjndoltaiwvkxsmk.supabase.co'
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN3cHd2am5kb2x0YWl3dmt4c21rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1Mjg0MDcxNywiZXhwIjoyMDY4NDE2NzE3fQ.B5_Q5Q-UL-Q6tJaCM0MCONuEYEdmQlvEvMet_hAYykw'
+const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('❌ Missing required environment variables:')
+  console.error('   SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL)')
+  console.error('   SUPABASE_SERVICE_ROLE_KEY')
+  process.exit(1)
+}
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
