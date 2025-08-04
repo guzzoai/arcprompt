@@ -1,27 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, Star, Copy, Bookmark, Filter, TrendingUp, Database, Heart, Eye, Lock, Megaphone, Code, PenTool, Briefcase, Palette, BarChart3, GraduationCap, Share2 } from "lucide-react"
+import { Search, Bookmark, Filter, TrendingUp, Database, Eye, Lock, Megaphone, Code, PenTool, Briefcase, Palette, BarChart3, GraduationCap, Share2, Layers } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/lib/auth-context"
+import { getPrompts, getCategories, getPopularPrompts } from "@/lib/prompt-data"
+import { PromptDetail } from "@/types/prompt"
 
 export default function PromptsPage() {
-  const { user } = useAuth()
+  const { } = useAuth()
+  
+  // State for data
+  const [prompts, setPrompts] = useState<PromptDetail[]>([])
+  const [categories, setCategories] = useState<Array<{ id: string, name: string, slug: string, count: number }>>([])
+  const [loading, setLoading] = useState(true)
+  const [popularPrompts, setPopularPrompts] = useState<PromptDetail[]>([])
   
   // For demo purposes, treating all users as free - can be changed based on user.user_metadata
   const isFreePlan = true // Change this logic based on your user plan detection
   
   // Function to determine if a prompt is unlocked (for demo purposes)
-  const isPromptUnlocked = (promptId: number) => {
-    // Make prompts with IDs 1, 3, and 5 unlocked for demo
-    return [1, 3, 5].includes(promptId)
+  const isPromptUnlocked = () => {
+    // For now, all prompts are unlocked for demo - can add logic later
+    return true
   }
 
   // Function to get category icon
@@ -41,153 +49,63 @@ export default function PromptsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [sortBy, setSortBy] = useState("newest")
-  const [savedPrompts, setSavedPrompts] = useState<number[]>([1, 3, 7])
+  const [savedPrompts, setSavedPrompts] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('savedPrompts')
+      return saved ? JSON.parse(saved) : []
+    }
+    return []
+  })
 
-  const categories = [
-    { id: "all", name: "All Categories", count: 170 },
-    { id: "writing", name: "Writing", count: 28 },
-    { id: "marketing", name: "Marketing", count: 24 },
-    { id: "coding", name: "Coding", count: 22 },
-    { id: "business", name: "Business", count: 20 },
-    { id: "creative", name: "Creative", count: 18 },
-    { id: "analysis", name: "Analysis", count: 16 },
-    { id: "education", name: "Education", count: 14 },
-    { id: "research", name: "Research", count: 12 },
-    { id: "productivity", name: "Productivity", count: 10 },
-    { id: "social", name: "Social Media", count: 6 },
-  ]
+  // Save bookmarks to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('savedPrompts', JSON.stringify(savedPrompts))
+    }
+  }, [savedPrompts])
 
-  const prompts = [
-    {
-      id: 1,
-      title: "Content Marketing Strategy Generator",
-      description:
-        "Create comprehensive content marketing strategies tailored to your business goals and target audience.",
-      category: "Marketing",
-      tags: ["strategy", "content", "planning"],
-      usage: 1247,
-      rating: 4.8,
-      preview:
-        "Act as a content marketing strategist. Create a comprehensive content marketing strategy for [BUSINESS TYPE] targeting [TARGET AUDIENCE]...",
-      author: "Sarah Chen",
-      dateAdded: "2024-01-15",
-    },
-    {
-      id: 2,
-      title: "Code Review Assistant",
-      description: "Get detailed code reviews with suggestions for improvements, best practices, and potential issues.",
-      category: "Coding",
-      tags: ["code review", "debugging", "best practices"],
-      usage: 892,
-      rating: 4.9,
-      preview: "You are an expert code reviewer. Please review the following code and provide detailed feedback on...",
-      author: "Mike Rodriguez",
-      dateAdded: "2024-01-14",
-    },
-    {
-      id: 3,
-      title: "Email Subject Line Optimizer",
-      description: "Generate compelling email subject lines that increase open rates and engagement.",
-      category: "Writing",
-      tags: ["email", "copywriting", "optimization"],
-      usage: 756,
-      rating: 4.7,
-      preview: "Create 10 compelling email subject lines for [EMAIL TYPE] targeting [AUDIENCE]. Focus on...",
-      author: "Emma Thompson",
-      dateAdded: "2024-01-13",
-    },
-    {
-      id: 4,
-      title: "Business Plan Generator",
-      description:
-        "Create detailed business plans with market analysis, financial projections, and strategic planning.",
-      category: "Business",
-      tags: ["business plan", "strategy", "planning"],
-      usage: 634,
-      rating: 4.6,
-      preview: "Act as a business consultant. Help me create a comprehensive business plan for [BUSINESS IDEA]...",
-      author: "David Kim",
-      dateAdded: "2024-01-12",
-    },
-    {
-      id: 5,
-      title: "Creative Story Starter",
-      description: "Generate unique story ideas, character development, and plot outlines for creative writing.",
-      category: "Creative",
-      tags: ["storytelling", "creative writing", "fiction"],
-      usage: 523,
-      rating: 4.8,
-      preview: "You are a creative writing mentor. Help me develop a story with the following elements...",
-      author: "Lisa Park",
-      dateAdded: "2024-01-11",
-    },
-    {
-      id: 6,
-      title: "Data Analysis Interpreter",
-      description: "Analyze datasets and provide insights, trends, and actionable recommendations.",
-      category: "Analysis",
-      tags: ["data analysis", "insights", "reporting"],
-      usage: 445,
-      rating: 4.7,
-      preview: "Act as a data analyst. Analyze the following dataset and provide key insights...",
-      author: "Alex Johnson",
-      dateAdded: "2024-01-10",
-    },
-    {
-      id: 7,
-      title: "Learning Path Creator",
-      description: "Design personalized learning paths for any skill or subject with structured progression.",
-      category: "Education",
-      tags: ["learning", "education", "curriculum"],
-      usage: 389,
-      rating: 4.9,
-      preview: "Create a comprehensive learning path for [SKILL/SUBJECT] suitable for [SKILL LEVEL]...",
-      author: "Rachel Green",
-      dateAdded: "2024-01-09",
-    },
-    {
-      id: 8,
-      title: "Social Media Content Planner",
-      description: "Plan and create engaging social media content across multiple platforms.",
-      category: "Social Media",
-      tags: ["social media", "content planning", "engagement"],
-      usage: 312,
-      rating: 4.5,
-      preview: "Act as a social media manager. Create a content calendar for [PLATFORM] focusing on...",
-      author: "Tom Wilson",
-      dateAdded: "2024-01-08",
-    },
-  ]
+  // Load data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        
+        // Load prompts, categories, and popular prompts in parallel
+        const [promptsResult, categoriesResult, popularResult] = await Promise.all([
+          getPrompts({
+            page: 1,
+            limit: 100, // Show more prompts - can add pagination later
+            category: selectedCategory === 'all' ? undefined : selectedCategory,
+            search: searchQuery || undefined,
+            sortBy: sortBy as 'newest' | 'popular' | 'rating'
+          }),
+          getCategories(),
+          getPopularPrompts(10)
+        ])
+        
+        setPrompts(promptsResult.prompts)
+        setCategories([
+          { id: "all", name: "All Categories", slug: "all", count: promptsResult.total },
+          ...categoriesResult
+        ])
+        setPopularPrompts(popularResult)
+        
+      } catch (error) {
+        console.error('Error loading prompt data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadData()
+  }, [selectedCategory, searchQuery, sortBy])
 
-  const toggleSavePrompt = (promptId: number) => {
+  const toggleSavePrompt = (promptId: string) => {
     setSavedPrompts((prev) => (prev.includes(promptId) ? prev.filter((id) => id !== promptId) : [...prev, promptId]))
   }
 
-  const filteredPrompts = prompts.filter((prompt) => {
-    const matchesSearch =
-      prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prompt.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prompt.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-
-    const matchesCategory = selectedCategory === "all" || prompt.category.toLowerCase() === selectedCategory
-
-    return matchesSearch && matchesCategory
-  })
-
-  const sortedPrompts = [...filteredPrompts].sort((a, b) => {
-    switch (sortBy) {
-      case "newest":
-        return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime()
-      case "popular":
-        return b.usage - a.usage
-      case "rating":
-        return b.rating - a.rating
-      case "alphabetical":
-        return a.title.localeCompare(b.title)
-      default:
-        return 0
-    }
-  })
+  // Prompts are already filtered and sorted by the backend
+  const sortedPrompts = prompts
 
   return (
     <DashboardLayout>
@@ -199,7 +117,7 @@ export default function PromptsPage() {
               <Database className="w-8 h-8 text-teal-600" />
               <span>Prompt Vault</span>
             </h1>
-            <p className="text-gray-600 mt-2">170+ professionally crafted prompts ready to use in your AI workflows</p>
+            <p className="text-gray-600 mt-2">{categories.find(c => c.id === 'all')?.count || 0}+ professionally crafted prompts ready to use in your AI workflows</p>
           </div>
           <div className="flex items-center space-x-4 mt-4 lg:mt-0">
             <Badge variant="secondary" className="bg-teal-100 text-teal-800">
@@ -261,8 +179,30 @@ export default function PromptsPage() {
           </TabsList>
 
           <TabsContent value="all" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {sortedPrompts.map((prompt) => (
+            {loading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, index) => (
+                  <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg animate-pulse min-h-[280px]">
+                    <CardHeader className="pb-0">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-gray-300 rounded w-1/4 mb-3"></div>
+                          <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
+                          <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                        </div>
+                        <div className="w-8 h-8 bg-gray-300 rounded"></div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
+                      <div className="w-full h-12 bg-gray-300 rounded mb-6"></div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+                {sortedPrompts.map((prompt) => (
                 <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                   <CardHeader className="pb-0">
                     <div className="flex items-start justify-between">
@@ -276,13 +216,20 @@ export default function PromptsPage() {
                         <div className="mt-2 ml-8">
                           <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
                         </div>
-                        <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                        <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                         <div className="flex flex-wrap gap-1 ml-8 mt-2">
-                          {prompt.tags.map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs">
-                              {tag}
+                          <Badge variant="secondary" className="text-xs">
+                            {prompt.complexity}
+                          </Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            {prompt.type}
+                          </Badge>
+                          {prompt.steps && prompt.steps.length > 0 && (
+                            <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200">
+                              <Layers className="w-3 h-3 mr-1" />
+                              {prompt.steps.length} Steps
                             </Badge>
-                          ))}
+                          )}
                         </div>
                       </div>
                       <Button
@@ -300,7 +247,7 @@ export default function PromptsPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
-                    {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                    {isFreePlan && !isPromptUnlocked() ? (
                       <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
                         <Lock className="w-4 h-4 mr-2" />
                         Unlock Prompt
@@ -315,8 +262,9 @@ export default function PromptsPage() {
                     )}
                   </CardContent>
                 </Card>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="saved" className="space-y-6">
@@ -337,13 +285,20 @@ export default function PromptsPage() {
                           <div className="mt-2 ml-8">
                             <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
                           </div>
-                          <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                          <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                           <div className="flex flex-wrap gap-1 ml-8 mt-2">
-                            {prompt.tags.map((tag) => (
-                              <Badge key={tag} variant="secondary" className="text-xs">
-                                {tag}
+                            <Badge variant="secondary" className="text-xs">
+                              {prompt.complexity}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              {prompt.type}
+                            </Badge>
+                            {prompt.steps && prompt.steps.length > 0 && (
+                              <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200">
+                                <Layers className="w-3 h-3 mr-1" />
+                                {prompt.steps.length} Steps
                               </Badge>
-                            ))}
+                            )}
                           </div>
                         </div>
                         <Button
@@ -361,7 +316,7 @@ export default function PromptsPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
-                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                      {isFreePlan && !isPromptUnlocked() ? (
                         <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
                           <Lock className="w-4 h-4 mr-2" />
                           Unlock Prompt
@@ -389,10 +344,7 @@ export default function PromptsPage() {
 
           <TabsContent value="popular" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-              {sortedPrompts
-                .sort((a, b) => b.usage - a.usage)
-                .slice(0, 9)
-                .map((prompt) => (
+              {popularPrompts.map((prompt) => (
                   <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
@@ -409,13 +361,20 @@ export default function PromptsPage() {
                           <div className="mt-2 ml-8">
                             <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
                           </div>
-                          <CardDescription className="line-clamp-2 ml-8">{prompt.description}</CardDescription>
+                          <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                           <div className="flex flex-wrap gap-1 ml-8 mt-2">
-                            {prompt.tags.map((tag) => (
-                              <Badge key={tag} variant="secondary" className="text-xs">
-                                {tag}
+                            <Badge variant="secondary" className="text-xs">
+                              {prompt.complexity}
+                            </Badge>
+                            <Badge variant="secondary" className="text-xs">
+                              {prompt.type}
+                            </Badge>
+                            {prompt.steps && prompt.steps.length > 0 && (
+                              <Badge variant="secondary" className="text-xs bg-purple-100 text-purple-700 border-purple-200">
+                                <Layers className="w-3 h-3 mr-1" />
+                                {prompt.steps.length} Steps
                               </Badge>
-                            ))}
+                            )}
                           </div>
                         </div>
                         <Button
@@ -433,7 +392,7 @@ export default function PromptsPage() {
                       </div>
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
-                      {isFreePlan && !isPromptUnlocked(prompt.id) ? (
+                      {isFreePlan && !isPromptUnlocked() ? (
                         <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
                           <Lock className="w-4 h-4 mr-2" />
                           Unlock Prompt
