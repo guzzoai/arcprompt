@@ -31,6 +31,16 @@ export default function PromptDetailPage() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [copiedStep, setCopiedStep] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
+  const [savedPrompts, setSavedPrompts] = useState<string[]>([])
+
+  // Load saved prompts from localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('savedPrompts')
+      const savedList = saved ? JSON.parse(saved) : []
+      setSavedPrompts(savedList)
+    }
+  }, [])
 
   useEffect(() => {
     const loadPrompt = async () => {
@@ -41,7 +51,10 @@ export default function PromptDetailPage() {
         
         if (promptData) {
           setPrompt(promptData)
-          setIsBookmarked(promptData.isBookmarked || false)
+          // Check if prompt is in saved list
+          const saved = localStorage.getItem('savedPrompts')
+          const savedList = saved ? JSON.parse(saved) : []
+          setIsBookmarked(savedList.includes(promptId))
         }
       } catch (error) {
         console.error('Error loading prompt:', error)
@@ -64,7 +77,21 @@ export default function PromptDetailPage() {
   }
 
   const toggleBookmark = () => {
-    setIsBookmarked(!isBookmarked)
+    if (!prompt) return
+    
+    const newBookmarkState = !isBookmarked
+    setIsBookmarked(newBookmarkState)
+    
+    // Update localStorage
+    let updatedSavedPrompts: string[]
+    if (newBookmarkState) {
+      updatedSavedPrompts = [...savedPrompts, prompt.id]
+    } else {
+      updatedSavedPrompts = savedPrompts.filter(id => id !== prompt.id)
+    }
+    
+    setSavedPrompts(updatedSavedPrompts)
+    localStorage.setItem('savedPrompts', JSON.stringify(updatedSavedPrompts))
   }
 
   if (loading) {
@@ -113,55 +140,29 @@ export default function PromptDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2">
-            <Card>
+            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
                       {prompt.title}
                     </CardTitle>
-                    <p className="text-gray-600 mb-4">{prompt.shortDescription}</p>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Badge variant="secondary">{prompt.category}</Badge>
-                      <Badge variant={prompt.complexity === "Beginner" ? "default" : prompt.complexity === "Intermediate" ? "secondary" : "destructive"}>
-                        {prompt.complexity}
-                      </Badge>
-                      <Badge variant={prompt.type === "FREE" ? "default" : "secondary"}>
-                        {prompt.type}
-                      </Badge>
-                      {prompt.steps && prompt.steps.length > 1 && (
-                        <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                          <Layers className="w-3 h-3 mr-1" />
-                          {prompt.steps.length} Steps
-                        </Badge>
-                      )}
-                    </div>
+                    <p className="text-gray-600">{prompt.shortDescription}</p>
                   </div>
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
                     onClick={toggleBookmark}
-                    className={isBookmarked ? "bg-blue-50 border-blue-200 text-blue-700" : ""}
+                    className={isBookmarked ? "text-blue-600" : "text-gray-400 hover:text-gray-600"}
                   >
-                    <Bookmark className={`w-4 h-4 mr-2 ${isBookmarked ? "fill-current" : ""}`} />
-                    {isBookmarked ? "Saved" : "Save"}
+                    <Bookmark className={`w-5 h-5 ${isBookmarked ? "fill-current" : ""}`} />
                   </Button>
                 </div>
               </CardHeader>
 
-              <CardContent className="space-y-6">
-                <Tabs defaultValue={prompt.steps && prompt.steps.length > 1 ? "step-0" : "prompt"} className="w-full">
-                  <TabsList className={`grid w-full ${
-                    !prompt.steps || prompt.steps.length <= 1 
-                      ? 'grid-cols-2' 
-                      : prompt.steps.length === 2 
-                      ? 'grid-cols-3'
-                      : prompt.steps.length === 3
-                      ? 'grid-cols-4'
-                      : prompt.steps.length === 4
-                      ? 'grid-cols-5'
-                      : 'grid-cols-6'
-                  }`}>
+              <CardContent>
+                <Tabs defaultValue={prompt.steps && prompt.steps.length > 1 ? "step-0" : "prompt"} className="space-y-6">
+                  <TabsList className="grid w-full" style={{gridTemplateColumns: prompt.steps && prompt.steps.length > 1 ? `repeat(${prompt.steps.length + 1}, 1fr)` : 'repeat(2, 1fr)'}}>
                     {/* Single Prompt Tab */}
                     {(!prompt.steps || prompt.steps.length <= 1) && (
                       <TabsTrigger value="prompt">Prompt</TabsTrigger>
@@ -169,9 +170,7 @@ export default function PromptDetailPage() {
                     
                     {/* Multi-Step Tabs */}
                     {prompt.steps && prompt.steps.length > 1 && prompt.steps.map((step, index) => (
-                      <TabsTrigger key={index} value={`step-${index}`}>
-                        Step {index + 1}
-                      </TabsTrigger>
+                      <TabsTrigger key={index} value={`step-${index}`}>Step {index + 1}</TabsTrigger>
                     ))}
                     
                     {/* Info Tab */}
@@ -180,7 +179,7 @@ export default function PromptDetailPage() {
 
                   {/* Single Prompt Content */}
                   {(!prompt.steps || prompt.steps.length <= 1) && (
-                    <TabsContent value="prompt" className="mt-6">
+                    <TabsContent value="prompt">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">Complete Prompt</h3>
                         <Button
@@ -201,7 +200,7 @@ export default function PromptDetailPage() {
                           )}
                         </Button>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-6 border">
+                      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                         <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
                           {prompt.content}
                         </pre>
@@ -211,7 +210,7 @@ export default function PromptDetailPage() {
 
                   {/* Multi-Step Content */}
                   {prompt.steps && prompt.steps.length > 1 && prompt.steps.map((step, index) => (
-                    <TabsContent key={index} value={`step-${index}`} className="mt-6">
+                    <TabsContent key={index} value={`step-${index}`}>
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h3 className="text-lg font-semibold text-gray-900">
@@ -241,7 +240,7 @@ export default function PromptDetailPage() {
                           )}
                         </Button>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-6 border">
+                      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                         <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
                           {step.content || prompt.content || "This step content is currently being prepared. Please check back soon for the complete step-by-step instructions."}
                         </pre>
@@ -250,7 +249,7 @@ export default function PromptDetailPage() {
                   ))}
 
                   {/* Info Tab */}
-                  <TabsContent value="info" className="mt-6">
+                  <TabsContent value="info">
                     <div className="space-y-8">
                       {/* How to Use */}
                       <div>
@@ -356,54 +355,60 @@ export default function PromptDetailPage() {
 
           {/* Right Column - Info Card */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-6">
+            <Card className="sticky top-6 bg-white border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-gray-900">Prompt Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Rating */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Rating</span>
-                  <div className="flex items-center space-x-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className="w-4 h-4 fill-current text-yellow-400" />
-                    ))}
-                    <span className="text-sm text-gray-500 ml-1">4.8</span>
+                {/* Category and Type */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Category</h4>
+                  <Badge variant="outline" className="bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">
+                    {prompt.category}
+                  </Badge>
+                </div>
+
+                {/* Complexity and Type */}
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Details</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant={prompt.complexity === "Beginner" ? "default" : prompt.complexity === "Intermediate" ? "secondary" : "destructive"}>
+                      {prompt.complexity}
+                    </Badge>
+                    <Badge variant={prompt.type === "FREE" ? "default" : "secondary"}>
+                      {prompt.type}
+                    </Badge>
+                    {prompt.steps && prompt.steps.length > 1 && (
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                        <Layers className="w-3 h-3 mr-1" />
+                        {prompt.steps.length} Steps
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                {/* Usage Stats */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Views</span>
-                  <div className="flex items-center space-x-1">
-                    <Eye className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{prompt.viewCount}</span>
+                {/* Multi-step titles */}
+                {prompt.steps && prompt.steps.length > 1 && (
+                  <div className="border-t pt-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Workflow Steps</h4>
+                    <ol className="space-y-1">
+                      {prompt.steps.map((step, index) => (
+                        <li key={index} className="text-sm text-gray-600">
+                          {index + 1}. {step.title || `Step ${step.stepNumber}`}
+                        </li>
+                      ))}
+                    </ol>
                   </div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Users</span>
-                  <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">2.1k</span>
-                  </div>
-                </div>
-
-                {/* Time */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Est. Time</span>
-                  <div className="flex items-center space-x-1">
-                    <Clock className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{prompt.estimatedTime}</span>
-                  </div>
-                </div>
+                )}
 
                 {/* Modified Date */}
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-700">Updated</span>
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{prompt.modifiedDate}</span>
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">Updated</span>
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="w-4 h-4 text-gray-400" />
+                      <span className="text-sm text-gray-600">{prompt.modifiedDate}</span>
+                    </div>
                   </div>
                 </div>
 
