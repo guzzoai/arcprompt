@@ -233,7 +233,7 @@ export default function MyPromptsPage() {
   }
 
   const handleDeletePrompt = (id: number) => {
-    setMyPrompts(myPrompts.filter((prompt) => prompt.id !== id))
+    setMyPrompts(myPrompts.filter((prompt: any) => prompt.id !== id))
   }
 
   const handleEditPrompt = (prompt: {
@@ -267,11 +267,11 @@ export default function MyPromptsPage() {
     setIsViewDialogOpen(true)
   }
 
-  const filteredPrompts = myPrompts.filter((prompt) => {
+  const filteredPrompts = myPrompts.filter((prompt: any) => {
     const matchesSearch =
       prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       prompt.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prompt.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      prompt.tags.some((tag: any) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
 
     const matchesFolder = selectedFolder === "all" || prompt.folder === selectedFolder
 
@@ -600,7 +600,7 @@ export default function MyPromptsPage() {
           {/* Created Prompts Tab */}
           <TabsContent value="created" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {filteredPrompts.map((prompt) => (
+          {filteredPrompts.map((prompt: any) => (
             <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -635,7 +635,7 @@ export default function MyPromptsPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-1">
-                  {prompt.tags.map((tag) => (
+                  {prompt.tags.map((tag: any) => (
                     <Badge key={tag} variant="secondary" className="text-xs">
                       {tag}
                     </Badge>

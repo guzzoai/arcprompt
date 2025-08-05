@@ -130,30 +130,73 @@ export class MarkdownParser {
     content: string
     estimatedTime?: string
   }> } {
-    // Check if it's a multi-step workflow
-    const stepMatches = content.match(/## 📋 \*\*STEP \d+:(.*?)\*\* \*\((.*?)\)\*/g)
+    // Check if it's a multi-step workflow - updated patterns
+    const stepHeaderMatterns = [
+      /## \*\*STEP \d+:\s*(.*?)\*\*\s*\*\((.*?)\)\*/g,
+      /## 📋 \*\*STEP \d+:\s*(.*?)\*\*\s*\*\((.*?)\)\*/g,
+      /## STEP \d+:\s*(.*?)\s*\*\((.*?)\)\*/g
+    ]
+    
+    let stepMatches = null
+    for (const pattern of stepHeaderMatterns) {
+      stepMatches = content.match(pattern)
+      if (stepMatches && stepMatches.length > 0) break
+    }
     
     if (stepMatches && stepMatches.length > 0) {
       // Multi-step workflow
       const stepsData = []
-      const stepSections = content.split(/## 📋 \*\*STEP \d+:/)
+      
+      // Split by step headers
+      const stepSplitPatterns = [
+        /## \*\*STEP \d+:/,
+        /## 📋 \*\*STEP \d+:/,
+        /## STEP \d+:/
+      ]
+      
+      let stepSections: string[] = []
+      for (const pattern of stepSplitPatterns) {
+        stepSections = content.split(pattern)
+        if (stepSections.length > 1) break
+      }
       
       for (let i = 1; i < stepSections.length; i++) {
         const section = stepSections[i]
-        const titleMatch = section.match(/^(.*?)\*\* \*\((.*?)\)\*/)
+        const titleMatch = section.match(/^(.*?)\*\* \*\((.*?)\)\*/) || section.match(/^(.*?)\s\*\((.*?)\)\*/)
         
         if (titleMatch) {
           const title = titleMatch[1].trim()
           const estimatedTime = titleMatch[2].trim()
           
-          // Extract the code block content
-          const codeBlockMatch = section.match(/```\n([\s\S]*?)\n```/)
-          const content = codeBlockMatch ? codeBlockMatch[1].trim() : ''
+          // Extract the content from ROLE: through OUTPUT FORMAT:
+          // First, try to extract everything from ROLE: to the next step header or end
+          let stepContent = ''
+          
+          // Look for ROLE: and capture everything after it
+          const roleIndex = section.indexOf('ROLE:')
+          if (roleIndex !== -1) {
+            // Get content from ROLE: to the end of this step section
+            const contentAfterRole = section.substring(roleIndex)
+            // Extract until we hit the next step separator (---) or the end
+            const endMatch = contentAfterRole.match(/([\s\S]*?)(?=\n---\s*$)/m)
+            if (endMatch) {
+              stepContent = endMatch[1].trim()
+            } else {
+              // If no separator found, take everything
+              stepContent = contentAfterRole.trim()
+            }
+          } else {
+            // Fallback: if no ROLE: found, extract content after the time estimate
+            const afterHeaderMatch = section.match(/\*\)\*\s*\n\n([\s\S]*?)(?=\n---\s*$|$)/m)
+            if (afterHeaderMatch) {
+              stepContent = afterHeaderMatch[1].trim()
+            }
+          }
           
           stepsData.push({
             stepNumber: i,
             title,
-            content,
+            content: stepContent,
             estimatedTime
           })
         }
@@ -205,6 +248,8 @@ export class MarkdownParser {
       new RegExp(`## 🎯 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       new RegExp(`## 📊 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       new RegExp(`## 🔄 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
+      // Plain formats without emojis but with bold
+      new RegExp(`## \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       // Plain formats without emojis
       new RegExp(`## ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i')
     ]
@@ -253,12 +298,18 @@ export class MarkdownParser {
   }
   
   private static extractWorkflowOverview(content: string): string | undefined {
-    const overviewMatch = content.match(/## 🎯 \*\*WORKFLOW OVERVIEW\*\*\n\n([\s\S]*?)(?=\n##|$)/)
-    if (overviewMatch) {
-      // Extract the main description, skip the "What You'll Create" part
-      const text = overviewMatch[1]
-      const mainDescription = text.split('**What You\'ll Create:**')[0].trim()
-      return mainDescription
+    // Try multiple patterns for workflow overview
+    const patterns = [
+      /## 🎯 \*\*WORKFLOW OVERVIEW\*\*\n\n([\s\S]*?)(?=\n\*\*What You'll Create:|$)/,
+      /## \*\*WORKFLOW OVERVIEW\*\*\n\n([\s\S]*?)(?=\n\*\*What You'll Create:|$)/,
+      /## WORKFLOW OVERVIEW\n\n([\s\S]*?)(?=\n\*\*What You'll Create:|$)/
+    ]
+    
+    for (const pattern of patterns) {
+      const match = content.match(pattern)
+      if (match) {
+        return match[1].trim()
+      }
     }
     return undefined
   }
@@ -429,12 +480,20 @@ export class MarkdownParser {
                        this.extractListSection(content, 'HOW TO USE') || 
                        this.extractListSection(content, '💡 HOW TO USE THIS PROMPT') ||
                        this.extractListSection(content, '💡 HOW TO USE')
+      
+      // For workflows, "What You'll Get" might be in different sections
       const whatYouGet = this.extractListSection(content, 'WHAT YOU\'LL GET') || 
-                        this.extractListSection(content, '🎯 WHAT YOU\'LL GET')
+                        this.extractListSection(content, '🎯 WHAT YOU\'LL GET') ||
+                        this.extractListSection(content, 'EXPECTED OUTCOMES') ||
+                        this.extractListSection(content, 'What You\'ll Create')
+      
       const expectedResults = this.extractListSection(content, 'EXPECTED RESULTS') || 
-                             this.extractListSection(content, '📊 EXPECTED RESULTS')
+                             this.extractListSection(content, '📊 EXPECTED RESULTS') ||
+                             this.extractListSection(content, 'SUCCESS METRICS')
+      
       const variations = this.extractListSection(content, 'VARIATIONS') || 
-                        this.extractListSection(content, '🔄 VARIATIONS')
+                        this.extractListSection(content, '🔄 VARIATIONS') ||
+                        this.extractListSection(content, 'WORKFLOW VARIATIONS')
       
       const parsedPrompt: ParsedPrompt = {
         title,

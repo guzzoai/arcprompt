@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -12,18 +12,20 @@ import {
   Copy, 
   Check, 
   Calendar, 
-  Eye, 
-  Clock, 
   ChevronRight,
   Home,
-  Star,
-  Users,
   Layers
 } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { getPromptById } from "@/lib/prompt-data"
 import { PromptDetail } from "@/types/prompt"
+
+// Helper to determine if prompt should be displayed as multi-step
+function shouldShowMultiStep(prompt: PromptDetail | null): boolean {
+  if (!prompt) return false
+  return !!(prompt.steps && prompt.steps.length > 1)
+}
 
 export default function PromptDetailPage() {
   const params = useParams()
@@ -32,6 +34,18 @@ export default function PromptDetailPage() {
   const [copiedStep, setCopiedStep] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [savedPrompts, setSavedPrompts] = useState<string[]>([])
+
+  // Get info sections from prompt data
+  const promptInfo = useMemo(() => {
+    if (!prompt) return { howToUse: [], whatYouGet: [], expectedResults: [], variations: [] }
+    
+    return {
+      howToUse: prompt.howToUse || [],
+      whatYouGet: prompt.whatYouGet || [],
+      expectedResults: prompt.expectedResults || [],
+      variations: prompt.variations || []
+    }
+  }, [prompt])
 
   // Load saved prompts from localStorage
   useEffect(() => {
@@ -50,6 +64,13 @@ export default function PromptDetailPage() {
         const promptData = await getPromptById(promptId)
         
         if (promptData) {
+          console.log('Loaded prompt data:', {
+            id: promptData.id,
+            title: promptData.title,
+            stepsCount: promptData.steps?.length,
+            firstStepHasContent: !!promptData.steps?.[0]?.content,
+            howToUseCount: promptData.howToUse?.length
+          })
           setPrompt(promptData)
           // Check if prompt is in saved list
           const saved = localStorage.getItem('savedPrompts')
@@ -161,15 +182,15 @@ export default function PromptDetailPage() {
               </CardHeader>
 
               <CardContent>
-                <Tabs defaultValue={prompt.steps && prompt.steps.length > 1 ? "step-0" : "prompt"} className="space-y-6">
-                  <TabsList className="grid w-full" style={{gridTemplateColumns: prompt.steps && prompt.steps.length > 1 ? `repeat(${prompt.steps.length + 1}, 1fr)` : 'repeat(2, 1fr)'}}>
+                <Tabs defaultValue={shouldShowMultiStep(prompt) ? "step-0" : "prompt"} className="space-y-6">
+                  <TabsList className="grid w-full" style={{gridTemplateColumns: shouldShowMultiStep(prompt) ? `repeat(${prompt.steps!.length + 1}, 1fr)` : 'repeat(2, 1fr)'}}>
                     {/* Single Prompt Tab */}
-                    {(!prompt.steps || prompt.steps.length <= 1) && (
+                    {!shouldShowMultiStep(prompt) && (
                       <TabsTrigger value="prompt">Prompt</TabsTrigger>
                     )}
                     
                     {/* Multi-Step Tabs */}
-                    {prompt.steps && prompt.steps.length > 1 && prompt.steps.map((step, index) => (
+                    {shouldShowMultiStep(prompt) && prompt.steps!.map((step, index) => (
                       <TabsTrigger key={index} value={`step-${index}`}>Step {index + 1}</TabsTrigger>
                     ))}
                     
@@ -178,12 +199,12 @@ export default function PromptDetailPage() {
                   </TabsList>
 
                   {/* Single Prompt Content */}
-                  {(!prompt.steps || prompt.steps.length <= 1) && (
+                  {!shouldShowMultiStep(prompt) && (
                     <TabsContent value="prompt">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="text-lg font-semibold text-gray-900">Complete Prompt</h3>
                         <Button
-                          onClick={() => handleCopy(prompt.content, 'main')}
+                          onClick={() => handleCopy(prompt.content || '', 'main')}
                           size="sm"
                           className="flex items-center space-x-2"
                         >
@@ -209,7 +230,7 @@ export default function PromptDetailPage() {
                   )}
 
                   {/* Multi-Step Content */}
-                  {prompt.steps && prompt.steps.length > 1 && prompt.steps.map((step, index) => (
+                  {shouldShowMultiStep(prompt) && prompt.steps!.map((step, index) => (
                     <TabsContent key={index} value={`step-${index}`}>
                       <div className="flex items-center justify-between mb-4">
                         <div>
@@ -223,7 +244,7 @@ export default function PromptDetailPage() {
                           )}
                         </div>
                         <Button
-                          onClick={() => handleCopy(step.content || prompt.content, `step-${index}`)}
+                          onClick={() => handleCopy(step.content || '', `step-${index}`)}
                           size="sm"
                           className="flex items-center space-x-2"
                         >
@@ -241,9 +262,17 @@ export default function PromptDetailPage() {
                         </Button>
                       </div>
                       <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
-                          {step.content || prompt.content || "This step content is currently being prepared. Please check back soon for the complete step-by-step instructions."}
-                        </pre>
+                        {step.content ? (
+                          <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
+                            {step.content}
+                          </pre>
+                        ) : (
+                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                            <p className="text-yellow-800 text-sm">
+                              This step content is currently being prepared. Please check back soon for the complete step-by-step instructions.
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </TabsContent>
                   ))}
@@ -254,9 +283,9 @@ export default function PromptDetailPage() {
                       {/* How to Use */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 How To Use</h3>
-                        {prompt.howToUse && prompt.howToUse.length > 0 ? (
+                        {promptInfo.howToUse && promptInfo.howToUse.length > 0 ? (
                           <ol className="space-y-2">
-                            {prompt.howToUse.map((step, index) => (
+                            {promptInfo.howToUse.map((step, index) => (
                               <li key={index} className="flex items-start space-x-3">
                                 <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-800 rounded-full flex items-center justify-center text-sm font-medium">
                                   {index + 1}
@@ -271,7 +300,7 @@ export default function PromptDetailPage() {
                             <ol className="space-y-2 text-gray-600">
                               <li className="flex items-start space-x-3">
                                 <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">1</span>
-                                <span>Copy the prompt above by clicking the "Copy Prompt" button</span>
+                                <span>Copy the prompt above by clicking the &quot;Copy Prompt&quot; button</span>
                               </li>
                               <li className="flex items-start space-x-3">
                                 <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">2</span>
@@ -292,10 +321,10 @@ export default function PromptDetailPage() {
 
                       {/* What You'll Get */}
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 What You'll Get</h3>
-                        {prompt.whatYouGet && prompt.whatYouGet.length > 0 ? (
+                        <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 What You&apos;ll Get</h3>
+                        {promptInfo.whatYouGet && promptInfo.whatYouGet.length > 0 ? (
                           <ul className="space-y-2">
-                            {prompt.whatYouGet.map((item, index) => (
+                            {promptInfo.whatYouGet.map((item, index) => (
                               <li key={index} className="flex items-start space-x-3">
                                 <Check className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" />
                                 <span className="text-gray-700">{item}</span>
@@ -312,9 +341,9 @@ export default function PromptDetailPage() {
                       {/* Expected Results */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 Expected Results</h3>
-                        {prompt.expectedResults && prompt.expectedResults.length > 0 ? (
+                        {promptInfo.expectedResults && promptInfo.expectedResults.length > 0 ? (
                           <ul className="space-y-2">
-                            {prompt.expectedResults.map((result, index) => (
+                            {promptInfo.expectedResults.map((result, index) => (
                               <li key={index} className="flex items-start space-x-3">
                                 <div className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
                                 <span className="text-gray-700">{result}</span>
@@ -331,9 +360,9 @@ export default function PromptDetailPage() {
                       {/* Variations */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">🔄 Variations</h3>
-                        {prompt.variations && prompt.variations.length > 0 ? (
+                        {promptInfo.variations && promptInfo.variations.length > 0 ? (
                           <ul className="space-y-2">
-                            {prompt.variations.map((variation, index) => (
+                            {promptInfo.variations.map((variation, index) => (
                               <li key={index} className="flex items-start space-x-3">
                                 <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
                                 <span className="text-gray-700">{variation}</span>
@@ -346,6 +375,25 @@ export default function PromptDetailPage() {
                           </div>
                         )}
                       </div>
+
+                      {/* Additional Sections */}
+                      {prompt.additionalSections && Object.keys(prompt.additionalSections).length > 0 && (
+                        <div className="space-y-6">
+                          {Object.entries(prompt.additionalSections)
+                            .sort(([,a], [,b]) => a.order - b.order)
+                            .map(([sectionKey, section]) => (
+                              <div key={sectionKey}>
+                                <h3 className="text-lg font-semibold text-gray-900 mb-4">{section.title}</h3>
+                                <div className="prose prose-gray prose-sm max-w-none">
+                                  <pre className="whitespace-pre-wrap text-sm text-gray-700 bg-gray-50 rounded-lg p-4 border">
+                                    {section.content}
+                                  </pre>
+                                </div>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      )}
                     </div>
                   </TabsContent>
                 </Tabs>
@@ -378,21 +426,21 @@ export default function PromptDetailPage() {
                     <Badge variant={prompt.type === "FREE" ? "default" : "secondary"}>
                       {prompt.type}
                     </Badge>
-                    {prompt.steps && prompt.steps.length > 1 && (
+                    {shouldShowMultiStep(prompt) && (
                       <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                         <Layers className="w-3 h-3 mr-1" />
-                        {prompt.steps.length} Steps
+                        {prompt.steps!.length} Steps
                       </Badge>
                     )}
                   </div>
                 </div>
 
                 {/* Multi-step titles */}
-                {prompt.steps && prompt.steps.length > 1 && (
+                {shouldShowMultiStep(prompt) && (
                   <div className="border-t pt-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Workflow Steps</h4>
                     <ol className="space-y-1">
-                      {prompt.steps.map((step, index) => (
+                      {prompt.steps!.map((step, index) => (
                         <li key={index} className="text-sm text-gray-600">
                           {index + 1}. {step.title || `Step ${step.stepNumber}`}
                         </li>
@@ -424,7 +472,7 @@ export default function PromptDetailPage() {
                 </div>
 
                 {/* Workflow Overview for multi-step */}
-                {prompt.steps && prompt.steps.length > 1 && prompt.workflowOverview && (
+                {shouldShowMultiStep(prompt) && prompt.workflowOverview && (
                   <div className="border-t pt-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Workflow Overview</h4>
                     <p className="text-sm text-gray-600">{prompt.workflowOverview}</p>
@@ -432,9 +480,9 @@ export default function PromptDetailPage() {
                 )}
 
                 {/* What You Create for multi-step */}
-                {prompt.steps && prompt.steps.length > 1 && prompt.whatYouCreate && (
+                {shouldShowMultiStep(prompt) && prompt.whatYouCreate && (
                   <div className="border-t pt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">What You'll Create</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">What You&apos;ll Create</h4>
                     <p className="text-sm text-gray-600">{prompt.whatYouCreate}</p>
                   </div>
                 )}
