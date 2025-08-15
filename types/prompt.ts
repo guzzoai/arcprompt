@@ -34,6 +34,9 @@ export interface PromptDetail {
     title: string
     content: string
     order: number
+    type?: string
+    icon?: string
+    parsedContent?: Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }>
   }>
   
   // Multi-step specific

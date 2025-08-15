@@ -16,6 +16,36 @@ const PROMPT_CONTENT_MAPPING: Record<string, {
   workflowOverview?: string
   whatYouCreate?: string
 }> = {
+  // Default fallback for any prompt missing info sections
+  '_default': {
+    howToUse: [
+      'Copy the complete prompt template above',
+      'Replace all placeholder fields with your specific information',
+      'Customize the parameters based on your unique requirements',
+      'Review and refine the AI-generated output',
+      'Iterate and adjust as needed for optimal results'
+    ],
+    whatYouGet: [
+      'Professional-quality AI-generated content',
+      'Customized output tailored to your inputs',
+      'Time-saving automation templates',
+      'Industry best practice recommendations',
+      'Scalable and reusable frameworks'
+    ],
+    expectedResults: [
+      'Significant time savings in content creation',
+      'Improved quality and consistency',
+      'Higher engagement rates',
+      'Professional-grade outputs',
+      'Enhanced productivity and efficiency'
+    ],
+    variations: [
+      'Adapt for different industries and niches',
+      'Modify tone and style for various platforms',
+      'Adjust complexity for different audience levels',
+      'Customize for B2B or B2C contexts'
+    ]
+  },
   'community-building-accelerator': {
     steps: [
       {
@@ -252,6 +282,7 @@ async function transformDatabasePrompt(dbPrompt: Record<string, unknown>): Promi
 
   // Check if we need to use static content mapping
   const staticData = PROMPT_CONTENT_MAPPING[dbPrompt.slug as string]
+  const defaultData = PROMPT_CONTENT_MAPPING['_default']
   
   // Debug logging
   if (dbPrompt.slug === 'community-building-accelerator') {
@@ -268,6 +299,17 @@ async function transformDatabasePrompt(dbPrompt: Record<string, unknown>): Promi
   if (staticData?.steps && steps.every(step => !step.content)) {
     steps = staticData.steps
     console.log('Applied static steps for:', dbPrompt.slug, 'Steps with content:', steps.filter(s => s.content).length)
+  }
+  
+  // Helper function to get info section with fallback
+  const getInfoSection = (dbField: string[] | undefined, staticField: string[] | undefined, defaultField: string[] | undefined): string[] => {
+    // Use database field if it has content
+    if (dbField && dbField.length > 0) return dbField
+    // Otherwise use static mapping for this specific prompt
+    if (staticField && staticField.length > 0) return staticField
+    // Finally fall back to default values
+    if (defaultField && defaultField.length > 0) return defaultField
+    return []
   }
 
   return {
@@ -288,18 +330,37 @@ async function transformDatabasePrompt(dbPrompt: Record<string, unknown>): Promi
     singlePrompt: dbPrompt.workflow_type === 'single' ? finalContent : undefined,
     steps: dbPrompt.workflow_type === 'multi-step' ? steps : undefined,
     
-    // Info tab content - use static data as fallback
-    howToUse: staticData?.howToUse?.length ? staticData.howToUse : (dbPrompt.how_to_use as string[]) || [],
-    whatYouGet: staticData?.whatYouGet?.length ? staticData.whatYouGet : (dbPrompt.what_you_get as string[]) || [],
-    expectedResults: staticData?.expectedResults?.length ? staticData.expectedResults : (dbPrompt.expected_results as string[]) || [],
-    variations: staticData?.variations?.length ? staticData.variations : (dbPrompt.variations as string[]) || [],
+    // Info tab content - use static data as fallback, then default
+    howToUse: getInfoSection(dbPrompt.how_to_use as string[], staticData?.howToUse, defaultData?.howToUse),
+    whatYouGet: getInfoSection(dbPrompt.what_you_get as string[], staticData?.whatYouGet, defaultData?.whatYouGet),
+    expectedResults: getInfoSection(dbPrompt.expected_results as string[], staticData?.expectedResults, defaultData?.expectedResults),
+    variations: getInfoSection(dbPrompt.variations as string[], staticData?.variations, defaultData?.variations),
     
-    // Additional sections - use database data
-    additionalSections: (dbPrompt.additional_sections as Record<string, {
-      title: string
-      content: string
-      order: number
-    }>) || {},
+    // Additional sections - use database data with enhancements
+    additionalSections: (() => {
+      const sections = (dbPrompt.additional_sections as Record<string, any>) || {}
+      const enhancedSections: Record<string, {
+        title: string
+        content: string
+        order: number
+        type?: string
+        icon?: string
+        parsedContent?: Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }>
+      }> = {}
+      
+      Object.entries(sections).forEach(([key, section]) => {
+        enhancedSections[key] = {
+          title: section.title,
+          content: section.content,
+          order: section.order,
+          type: section.type || 'generic',
+          icon: section.icon || '📄',
+          parsedContent: section.parsedContent
+        }
+      })
+      
+      return enhancedSections
+    })(),
     
     // Multi-step specific - use static data as fallback
     workflowOverview: staticData?.workflowOverview || dbPrompt.workflow_overview as string,

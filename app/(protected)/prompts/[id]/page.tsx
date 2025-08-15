@@ -20,6 +20,7 @@ import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { getPromptById } from "@/lib/prompt-data"
 import { PromptDetail } from "@/types/prompt"
+import { AdditionalSectionRenderer } from "@/components/ui/additional-section-renderer"
 
 // Helper to determine if prompt should be displayed as multi-step
 function shouldShowMultiStep(prompt: PromptDetail | null): boolean {
@@ -283,113 +284,71 @@ export default function PromptDetailPage() {
                       {/* How to Use */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 How To Use</h3>
-                        {promptInfo.howToUse && promptInfo.howToUse.length > 0 ? (
-                          <ol className="space-y-2">
-                            {promptInfo.howToUse.map((step, index) => (
-                              <li key={index} className="flex items-start space-x-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-800 rounded-full flex items-center justify-center text-sm font-medium">
-                                  {index + 1}
-                                </span>
-                                <span className="text-gray-700">{step}</span>
-                              </li>
-                            ))}
-                          </ol>
-                        ) : (
-                          <div className="bg-gray-50 rounded-lg p-4 border border-dashed">
-                            <p className="text-gray-500 mb-3 text-sm italic">Basic usage instructions</p>
-                            <ol className="space-y-2 text-gray-600">
-                              <li className="flex items-start space-x-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">1</span>
-                                <span>Copy the prompt above by clicking the &quot;Copy Prompt&quot; button</span>
-                              </li>
-                              <li className="flex items-start space-x-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">2</span>
-                                <span>Paste it into your preferred AI platform ({prompt.platforms.join(', ')})</span>
-                              </li>
-                              <li className="flex items-start space-x-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">3</span>
-                                <span>Fill in any placeholders with your specific information</span>
-                              </li>
-                              <li className="flex items-start space-x-3">
-                                <span className="flex-shrink-0 w-6 h-6 bg-gray-100 text-gray-600 rounded-full flex items-center justify-center text-sm font-medium">4</span>
-                                <span>Review and refine the results as needed</span>
-                              </li>
-                            </ol>
-                          </div>
-                        )}
+                        <ol className="space-y-2">
+                          {promptInfo.howToUse.map((step, index) => (
+                            <li key={index} className="flex items-start space-x-3">
+                              <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-700">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
                       </div>
 
                       {/* What You'll Get */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 What You&apos;ll Get</h3>
-                        {promptInfo.whatYouGet && promptInfo.whatYouGet.length > 0 ? (
-                          <ul className="space-y-2">
-                            {promptInfo.whatYouGet.map((item, index) => (
-                              <li key={index} className="flex items-start space-x-3">
-                                <Check className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" />
-                                <span className="text-gray-700">{item}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="bg-gray-50 rounded-lg p-4 border border-dashed">
-                            <p className="text-gray-500 text-sm">Detailed outcomes will be available soon.</p>
-                          </div>
-                        )}
+                        <ul className="space-y-2">
+                          {promptInfo.whatYouGet.map((item, index) => (
+                            <li key={index} className="flex items-start space-x-3">
+                              <Check className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" />
+                              <span className="text-gray-700">{item}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
                       {/* Expected Results */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 Expected Results</h3>
-                        {promptInfo.expectedResults && promptInfo.expectedResults.length > 0 ? (
-                          <ul className="space-y-2">
-                            {promptInfo.expectedResults.map((result, index) => (
-                              <li key={index} className="flex items-start space-x-3">
-                                <div className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                                <span className="text-gray-700">{result}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="bg-gray-50 rounded-lg p-4 border border-dashed">
-                            <p className="text-gray-500 text-sm">Performance metrics will be available soon.</p>
-                          </div>
-                        )}
+                        <ul className="space-y-2">
+                          {promptInfo.expectedResults.map((result, index) => (
+                            <li key={index} className="flex items-start space-x-3">
+                              <div className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                              <span className="text-gray-700">{result}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
                       {/* Variations */}
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-4">🔄 Variations</h3>
-                        {promptInfo.variations && promptInfo.variations.length > 0 ? (
-                          <ul className="space-y-2">
-                            {promptInfo.variations.map((variation, index) => (
-                              <li key={index} className="flex items-start space-x-3">
-                                <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
-                                <span className="text-gray-700">{variation}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <div className="bg-gray-50 rounded-lg p-4 border border-dashed">
-                            <p className="text-gray-500 text-sm">Prompt variations will be available soon.</p>
-                          </div>
-                        )}
+                        <ul className="space-y-2">
+                          {promptInfo.variations.map((variation, index) => (
+                            <li key={index} className="flex items-start space-x-3">
+                              <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
+                              <span className="text-gray-700">{variation}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
 
                       {/* Additional Sections */}
                       {prompt.additionalSections && Object.keys(prompt.additionalSections).length > 0 && (
-                        <div className="space-y-6">
+                        <div className="space-y-8">
                           {Object.entries(prompt.additionalSections)
                             .sort(([,a], [,b]) => a.order - b.order)
                             .map(([sectionKey, section]) => (
-                              <div key={sectionKey}>
-                                <h3 className="text-lg font-semibold text-gray-900 mb-4">{section.title}</h3>
-                                <div className="prose prose-gray prose-sm max-w-none">
-                                  <pre className="whitespace-pre-wrap text-sm text-gray-700 bg-gray-50 rounded-lg p-4 border">
-                                    {section.content}
-                                  </pre>
-                                </div>
-                              </div>
+                              <AdditionalSectionRenderer
+                                key={sectionKey}
+                                title={section.title}
+                                type={section.type || 'generic'}
+                                icon={section.icon || '📄'}
+                                parsedContent={section.parsedContent}
+                                rawContent={section.content}
+                              />
                             ))
                           }
                         </div>

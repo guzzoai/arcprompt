@@ -34,6 +34,9 @@ export interface ParsedPrompt {
     title: string
     content: string
     order: number
+    type?: string
+    icon?: string
+    parsedContent?: Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }>
   }>
   
   // Multi-step specific
@@ -130,10 +133,11 @@ export class MarkdownParser {
     content: string
     estimatedTime?: string
   }> } {
-    // Check if it's a multi-step workflow - updated patterns
+    // Check if it's a multi-step workflow - updated patterns to handle standardized format with various emojis
     const stepHeaderMatterns = [
+      /## [\p{Emoji}]+ \*\*STEP \d+:\s*(.*?)\s*\*\((.*?)\)\*+/gu,
       /## \*\*STEP \d+:\s*(.*?)\*\*\s*\*\((.*?)\)\*/g,
-      /## 📋 \*\*STEP \d+:\s*(.*?)\*\*\s*\*\((.*?)\)\*/g,
+      /## [\p{Emoji}]+ \*\*STEP \d+:\s*(.*?)\*\*\s*\*\((.*?)\)\*/gu,
       /## STEP \d+:\s*(.*?)\s*\*\((.*?)\)\*/g
     ]
     
@@ -147,10 +151,10 @@ export class MarkdownParser {
       // Multi-step workflow
       const stepsData = []
       
-      // Split by step headers
+      // Split by step headers - updated to handle standardized format with any emoji
       const stepSplitPatterns = [
+        /## [\p{Emoji}]+ \*\*STEP \d+:/u,
         /## \*\*STEP \d+:/,
-        /## 📋 \*\*STEP \d+:/,
         /## STEP \d+:/
       ]
       
@@ -162,7 +166,8 @@ export class MarkdownParser {
       
       for (let i = 1; i < stepSections.length; i++) {
         const section = stepSections[i]
-        const titleMatch = section.match(/^(.*?)\*\* \*\((.*?)\)\*/) || section.match(/^(.*?)\s\*\((.*?)\)\*/)
+        // Updated to handle standardized format with multiple asterisks
+        const titleMatch = section.match(/^(.*?)\s*\*\((.*?)\)\*+/) || section.match(/^(.*?)\*\* \*\((.*?)\)\*/) || section.match(/^(.*?)\s\*\((.*?)\)\*/)
         
         if (titleMatch) {
           const title = titleMatch[1].trim()
@@ -236,22 +241,18 @@ export class MarkdownParser {
     // Normalize line endings first
     const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
     
-    // Try multiple patterns for different section title formats
+    // All markdown files have been standardized to use consistent section names and formats
+    
+    // Standardized formats with emojis and bold (after standardization)
     const patterns = [
-      // Standard formats with emojis and optional bold
+      // Standard emoji-based section titles
       new RegExp(`## 💡 \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       new RegExp(`## 🎯 \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       new RegExp(`## 📊 \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
       new RegExp(`## 🔄 \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      // Formats without bold but with emojis
-      new RegExp(`## 💡 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      new RegExp(`## 🎯 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      new RegExp(`## 📊 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      new RegExp(`## 🔄 ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      // Plain formats without emojis but with bold
-      new RegExp(`## \\*\\*${sectionTitle}\\*\\*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
-      // Plain formats without emojis
-      new RegExp(`## ${sectionTitle}\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i')
+      // Fallback for any remaining variations
+      new RegExp(`## [^#]*\\*\\*${sectionTitle}\\*\\*[^\\n]*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i'),
+      new RegExp(`## [^#]*${sectionTitle}[^\\n]*\\n\\n([\\s\\S]*?)(?=\\n---|\\n##|$)`, 'i')
     ]
     
     let section = ''
@@ -322,7 +323,14 @@ export class MarkdownParser {
     return undefined
   }
   
-  private static extractAdditionalSections(content: string): Record<string, { title: string; content: string; order: number }> {
+  private static extractAdditionalSections(content: string): Record<string, { 
+    title: string; 
+    content: string; 
+    order: number;
+    type?: string;
+    icon?: string;
+    parsedContent?: Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }>
+  }> {
     // Normalize line endings
     const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
     
@@ -387,6 +395,12 @@ export class MarkdownParser {
       
       // Only include sections with substantial content
       if (sectionContent.length > 50) {
+        // Detect section type and get appropriate icon
+        const { type, icon } = this.detectSectionType(cleanTitle, sectionContent)
+        
+        // Parse content structure
+        const parsedContent = this.parseContentStructure(sectionContent, type)
+        
         // Create a key from the clean title
         const sectionKey = cleanTitle
           .toLowerCase()
@@ -398,13 +412,164 @@ export class MarkdownParser {
         additionalSections[sectionKey] = {
           title: cleanTitle,
           content: sectionContent,
-          order
+          order,
+          ...(type && { type }),
+          ...(icon && { icon }),
+          ...(parsedContent && { parsedContent })
         }
         order++
       }
     }
     
     return additionalSections
+  }
+  
+  // Helper method to detect content type based on section title and content
+  private static detectSectionType(title: string, content: string): { type: string; icon: string } {
+    const normalizedTitle = title.toLowerCase()
+    
+    // Define section type mappings
+    const typeMap = [
+      { keywords: ['example', 'output', 'sample', 'template'], type: 'example', icon: '📝' },
+      { keywords: ['success', 'metric', 'result', 'performance', 'achieve'], type: 'metrics', icon: '📊' },
+      { keywords: ['tip', 'pro tip', 'hint', 'advice'], type: 'tips', icon: '💡' },
+      { keywords: ['best practice', 'recommendation', 'guideline'], type: 'practices', icon: '⭐' },
+      { keywords: ['troubleshoot', 'problem', 'issue', 'error', 'fix'], type: 'troubleshooting', icon: '🔧' },
+      { keywords: ['note', 'important', 'warning', 'caution'], type: 'notes', icon: '⚠️' },
+      { keywords: ['feature', 'capability', 'function'], type: 'features', icon: '🚀' },
+      { keywords: ['step', 'process', 'workflow', 'procedure'], type: 'process', icon: '🔄' }
+    ]
+    
+    // Check title for keywords
+    for (const mapping of typeMap) {
+      if (mapping.keywords.some(keyword => normalizedTitle.includes(keyword))) {
+        return { type: mapping.type, icon: mapping.icon }
+      }
+    }
+    
+    // Analyze content patterns
+    if (content.includes('%') && content.includes('x')) {
+      return { type: 'metrics', icon: '📊' }
+    }
+    
+    if (content.includes('**Scenario') || content.includes('*Example')) {
+      return { type: 'example', icon: '📝' }
+    }
+    
+    // Default
+    return { type: 'generic', icon: '📄' }
+  }
+  
+  // Helper method to parse section content into structured format
+  private static parseContentStructure(content: string, type: string): Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }> {
+    const result: Array<{ type: 'text' | 'list' | 'scenario' | 'metric'; content: string; items?: string[] }> = []
+    
+    // Normalize content
+    const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+    
+    // First, check if the entire content looks like a structured list
+    const allLines = normalizedContent.split('\n').map(line => line.trim()).filter(line => line.length > 0)
+    const listLines = allLines.filter(line => 
+      line.match(/^\s*[-*•]\s/) || 
+      line.match(/^\s*\d+\.\s/) ||
+      line.startsWith('- ') ||
+      line.startsWith('• ')
+    )
+    
+    // If most lines are list items, treat the whole thing as a list
+    if (listLines.length >= allLines.length * 0.6) {
+      const items = allLines.map(line => {
+        // Clean up list formatting
+        return line
+          .replace(/^\s*[-*•]\s*/, '')
+          .replace(/^\s*\d+\.\s*/, '')
+          .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold formatting
+          .trim()
+      }).filter(item => item.length > 0)
+      
+      if (items.length > 0) {
+        result.push({
+          type: 'list',
+          content: '',
+          items
+        })
+        return result
+      }
+    }
+    
+    // Split content by empty lines to identify blocks
+    const blocks = normalizedContent.split(/\n\s*\n/).filter(block => block.trim())
+    
+    for (const block of blocks) {
+      const trimmedBlock = block.trim()
+      
+      // Detect scenarios (Example Output format)
+      if (trimmedBlock.includes('**Scenario') || trimmedBlock.includes('*Original Comment:') || trimmedBlock.includes('**Primary Response:')) {
+        result.push({
+          type: 'scenario',
+          content: trimmedBlock
+        })
+        continue
+      }
+      
+      // Detect subsections with headers (like "Visual Design Tips:")
+      if (trimmedBlock.includes('**') && trimmedBlock.includes(':')) {
+        const lines = trimmedBlock.split('\n')
+        const headerLine = lines[0]
+        const contentLines = lines.slice(1).filter(line => line.trim())
+        
+        if (contentLines.length > 0) {
+          const items = contentLines.map(line => 
+            line.replace(/^\s*[-*•]\s*/, '').replace(/^\s*\d+\.\s*/, '').trim()
+          ).filter(item => item.length > 0)
+          
+          if (items.length > 1) {
+            result.push({
+              type: 'list',
+              content: headerLine.replace(/\*\*(.*?)\*\*/g, '$1').trim(),
+              items
+            })
+            continue
+          }
+        }
+      }
+      
+      // Detect metrics (lines with percentages or multipliers)
+      if (type === 'metrics' && (trimmedBlock.includes('%') || trimmedBlock.match(/\d+x\s/))) {
+        const metricLines = trimmedBlock.split('\n').filter(line => line.includes('-') || line.includes('•') || line.includes('*'))
+        if (metricLines.length > 0) {
+          result.push({
+            type: 'metric',
+            content: '',
+            items: metricLines.map(line => line.replace(/^[-*•]\s*\*\*?/, '').replace(/\*\*?$/, '').trim())
+          })
+          continue
+        }
+      }
+      
+      // Detect lists (bullet points, numbered items)
+      const listItems = trimmedBlock.split('\n').filter(line => 
+        line.match(/^\s*[-*•]\s/) || line.match(/^\s*\d+\.\s/)
+      )
+      
+      if (listItems.length >= 2) {
+        result.push({
+          type: 'list',
+          content: '',
+          items: listItems.map(item => 
+            item.replace(/^\s*[-*•]\s*/, '').replace(/^\s*\d+\.\s*/, '').trim()
+          )
+        })
+      } else {
+        // Regular text block
+        result.push({
+          type: 'text',
+          content: trimmedBlock
+        })
+      }
+    }
+    
+    return result
   }
   
   private static generateSlug(title: string): string {
