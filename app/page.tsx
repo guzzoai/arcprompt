@@ -24,6 +24,7 @@ import {
   MessageSquare
 } from "lucide-react"
 import Link from "next/link"
+import { SimpleThemeToggle } from "@/components/theme-toggle"
 
 export default function HomePage() {
   const categories = [
@@ -31,56 +32,56 @@ export default function HomePage() {
       id: "writing", 
       name: "Writing & Content", 
       icon: PenTool, 
-      color: "bg-blue-100 text-blue-700",
+      color: "bg-primary/10 text-primary dark:bg-primary/20",
       subcategories: ["Blog Posts", "Email Copy", "Social Media", "Product Descriptions", "Press Releases"]
     },
     { 
       id: "marketing", 
       name: "Marketing & Sales", 
       icon: Target, 
-      color: "bg-green-100 text-green-700",
+      color: "bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-400",
       subcategories: ["Ad Copy", "Lead Generation", "Brand Strategy", "Customer Research", "Campaign Planning"]
     },
     { 
       id: "coding", 
       name: "Development & Tech", 
       icon: Code, 
-      color: "bg-purple-100 text-purple-700",
+      color: "bg-purple-500/10 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400",
       subcategories: ["Code Review", "Documentation", "Debugging", "API Design", "System Architecture"]
     },
     { 
       id: "business", 
       name: "Business Strategy", 
       icon: Briefcase, 
-      color: "bg-orange-100 text-orange-700",
+      color: "bg-orange-500/10 text-orange-700 dark:bg-orange-500/20 dark:text-orange-400",
       subcategories: ["Business Plans", "Market Analysis", "Financial Modeling", "Process Optimization", "Team Management"]
     },
     { 
       id: "creative", 
       name: "Creative & Design", 
       icon: Lightbulb, 
-      color: "bg-pink-100 text-pink-700",
+      color: "bg-pink-500/10 text-pink-700 dark:bg-pink-500/20 dark:text-pink-400",
       subcategories: ["Design Briefs", "Creative Concepts", "Brand Identity", "User Experience", "Visual Content"]
     },
     { 
       id: "analysis", 
       name: "Data & Analytics", 
       icon: BarChart3, 
-      color: "bg-indigo-100 text-indigo-700",
+      color: "bg-indigo-500/10 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-400",
       subcategories: ["Data Analysis", "Report Writing", "Trend Analysis", "Performance Metrics", "Predictive Modeling"]
     },
     { 
       id: "education", 
       name: "Education & Training", 
       icon: GraduationCap, 
-      color: "bg-teal-100 text-teal-700",
+      color: "bg-teal-500/10 text-teal-700 dark:bg-teal-500/20 dark:text-teal-400",
       subcategories: ["Course Creation", "Learning Plans", "Assessment Design", "Skill Development", "Knowledge Transfer"]
     },
     { 
       id: "research", 
       name: "Research & Innovation", 
       icon: Search, 
-      color: "bg-red-100 text-red-700",
+      color: "bg-red-500/10 text-red-700 dark:bg-red-500/20 dark:text-red-400",
       subcategories: ["Market Research", "Competitive Analysis", "Innovation Strategy", "Trend Identification", "Knowledge Discovery"]
     }
   ]
@@ -163,17 +164,18 @@ export default function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-purple-500/5 dark:from-primary/10 dark:via-background dark:to-purple-500/10">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border bg-background/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ArcPrompt</span>
+            <span className="text-xl font-bold text-foreground">ArcPrompt</span>
           </div>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
+            <SimpleThemeToggle />
             <Link href="/login">
               <Button variant="ghost">Sign In</Button>
             </Link>
@@ -187,15 +189,15 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto">
-          <Badge className="mb-6 bg-blue-100 text-blue-800 border-blue-200">
+          <Badge className="mb-6 bg-primary/10 text-primary border-primary/20">
             170+ Professional AI Prompts
           </Badge>
           
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
             Transform Your AI Results with <span className="text-blue-600">170+ Expert-Crafted Prompts</span>
           </h1>
           
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
             Stop wasting time with mediocre AI outputs. Get professional-grade results from ChatGPT, Claude & Gemini with our battle-tested prompt library. Save 5+ hours weekly and 10x your productivity.
           </p>
 
@@ -214,7 +216,7 @@ export default function HomePage() {
           </div>
 
           {/* Social Proof */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-600">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-muted-foreground">
             <div className="flex items-center space-x-2">
               <Users className="w-5 h-5 text-blue-600" />
               <span>10,000+ professionals trust ArcPrompt</span>
@@ -232,26 +234,26 @@ export default function HomePage() {
       </section>
 
       {/* Value Propositions */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Why Choose ArcPrompt?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Join thousands of professionals who&apos;ve transformed their AI workflow
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {whyArcPrompt.map((item, index) => (
-              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+              <Card key={index} className="bg-card border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
                 <CardContent className="pt-6 text-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <item.icon className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">{item.description}</p>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{item.title}</h3>
+                  <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -260,20 +262,20 @@ export default function HomePage() {
       </section>
 
       {/* Featured Prompts */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Featured Prompts That Drive Results
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               See what our top-performing prompts can do for your workflow
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {featuredPrompts.map((prompt, index) => (
-              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+              <Card key={index} className="bg-card border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline">{prompt.category}</Badge>
@@ -283,12 +285,12 @@ export default function HomePage() {
                     </div>
                   </div>
                   <CardTitle className="text-lg">{prompt.title}</CardTitle>
-                  <CardDescription className="text-gray-600">
+                  <CardDescription className="text-muted-foreground">
                     {prompt.description}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                  <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4">
                     <div className="flex items-center space-x-2">
                       <TrendingUp className="w-4 h-4 text-green-600" />
                       <span className="text-sm font-medium text-green-800">
@@ -296,7 +298,7 @@ export default function HomePage() {
                       </span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between text-sm text-gray-500">
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
                     <span>{prompt.uses} uses</span>
                     <Link href="/prompts">
                       <Button size="sm" variant="outline">
@@ -312,31 +314,31 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Explore by Category
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Discover prompts tailored to your specific needs and industry
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((category) => (
-              <Card key={category.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 hover:-translate-y-1">
+              <Card key={category.id} className="bg-card border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 hover:-translate-y-1">
                 <CardContent className="p-6">
                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 ${category.color}`}>
                     <category.icon className="w-6 h-6" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{category.name}</h3>
                   <div className="space-y-1">
                     {category.subcategories.slice(0, 3).map((sub, index) => (
-                      <p key={index} className="text-sm text-gray-600">• {sub}</p>
+                      <p key={index} className="text-sm text-muted-foreground">• {sub}</p>
                     ))}
                     {category.subcategories.length > 3 && (
-                      <p className="text-sm text-gray-500">+ {category.subcategories.length - 3} more</p>
+                      <p className="text-sm text-muted-foreground">+ {category.subcategories.length - 3} more</p>
                     )}
                   </div>
                 </CardContent>
@@ -356,27 +358,27 @@ export default function HomePage() {
       </section>
 
       {/* Use Case Gallery */}
-      <section className="py-20 bg-blue-50">
+      <section className="py-20 bg-primary/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Perfect for Every Professional
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               See how different teams use ArcPrompt to supercharge their productivity
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {useCases.map((useCase, index) => (
-              <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+              <Card key={index} className="bg-card border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
                 <CardContent className="p-6 text-center">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
                     <useCase.icon className="w-6 h-6 text-blue-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{useCase.title}</h3>
-                  <p className="text-gray-600 text-sm mb-3">{useCase.description}</p>
-                  <Badge variant="secondary" className="bg-green-100 text-green-800">
+                  <h3 className="text-lg font-semibold text-foreground mb-2">{useCase.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-3">{useCase.description}</p>
+                  <Badge variant="secondary" className="bg-green-500/10 text-green-700 dark:bg-green-500/20 dark:text-green-400">
                     {useCase.metrics}
                   </Badge>
                 </CardContent>
@@ -387,12 +389,12 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-900 text-white">
+      <section className="py-20 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Transform Your AI Results?
           </h2>
-          <p className="text-lg text-gray-300 mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-primary-foreground/80 mb-8 max-w-2xl mx-auto">
             Join 10,000+ professionals who save 5+ hours weekly with our expert-crafted prompts
           </p>
           
@@ -404,13 +406,13 @@ export default function HomePage() {
               </Button>
             </Link>
             <Link href="/prompts">
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-gray-600 text-gray-900 bg-white hover:bg-gray-100">
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/20 bg-background text-foreground hover:bg-accent">
                 Browse Library
               </Button>
             </Link>
           </div>
 
-          <div className="flex items-center justify-center space-x-4 text-sm text-gray-400">
+          <div className="flex items-center justify-center space-x-4 text-sm text-primary-foreground/60">
             <div className="flex items-center space-x-1">
               <CheckCircle className="w-4 h-4 text-green-500" />
               <span>Free 7-day trial</span>
@@ -428,25 +430,25 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white border-t py-12">
+      <footer className="bg-background border-t border-border py-12">
         <div className="container mx-auto px-4">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-4">
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">ArcPrompt</span>
+              <span className="text-xl font-bold text-foreground">ArcPrompt</span>
             </div>
-            <p className="text-gray-600 mb-8">
+            <p className="text-muted-foreground mb-8">
               The professional AI prompt database trusted by 10,000+ users worldwide
             </p>
-            <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-600">
-              <Link href="/prompts" className="hover:text-gray-900">Browse Prompts</Link>
-              <Link href="/pricing" className="hover:text-gray-900">Pricing</Link>
-              <Link href="/about" className="hover:text-gray-900">About</Link>
-              <Link href="/contact" className="hover:text-gray-900">Contact</Link>
-              <Link href="/privacy" className="hover:text-gray-900">Privacy Policy</Link>
-              <Link href="/terms" className="hover:text-gray-900">Terms of Service</Link>
+            <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
+              <Link href="/prompts" className="hover:text-foreground">Browse Prompts</Link>
+              <Link href="/pricing" className="hover:text-foreground">Pricing</Link>
+              <Link href="/about" className="hover:text-foreground">About</Link>
+              <Link href="/contact" className="hover:text-foreground">Contact</Link>
+              <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Eye, EyeOff, Zap } from "lucide-react"
 import Link from "next/link"
+import { SimpleThemeToggle } from "@/components/theme-toggle"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/lib/auth-context"
 
@@ -70,20 +71,23 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
+        <div className="absolute top-4 right-4">
+          <SimpleThemeToggle />
+        </div>
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">ArcPrompt</span>
+            <span className="text-2xl font-bold text-foreground">ArcPrompt</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h1>
-          <p className="text-gray-600">Sign in to access your prompt collection</p>
+          <h1 className="text-2xl font-bold text-foreground mb-2">Welcome back</h1>
+          <p className="text-muted-foreground">Sign in to access your prompt collection</p>
         </div>
 
-        <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+        <Card className="bg-card border shadow-lg">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>Enter your credentials to access your account</CardDescription>
@@ -116,12 +120,12 @@ export default function LoginPage() {
                 <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+                <span className="bg-card px-2 text-muted-foreground">Or continue with email</span>
               </div>
             </div>
 
             {error && (
-              <div className="text-red-600 text-sm text-center bg-red-50 p-2 rounded">
+              <div className="text-destructive text-sm text-center bg-destructive/10 p-2 rounded">
                 {error}
               </div>
             )}
@@ -175,7 +179,7 @@ export default function LoginPage() {
                     Remember me
                   </Label>
                 </div>
-                <Link href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                <Link href="/forgot-password" className="text-sm text-primary hover:underline">
                   Forgot password?
                 </Link>
               </div>
@@ -186,8 +190,8 @@ export default function LoginPage() {
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-gray-600">Don&apos;t have an account? </span>
-              <Link href="/register" className="text-blue-600 hover:underline">
+              <span className="text-muted-foreground">Don&apos;t have an account? </span>
+              <Link href="/register" className="text-primary hover:underline">
                 Sign up
               </Link>
             </div>

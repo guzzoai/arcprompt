@@ -36,13 +36,13 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-foreground">
               Welcome back, {user?.user_metadata?.full_name || user?.email || 'User'}! 👋
             </h1>
-            <p className="text-gray-600 mt-2">Explore and manage your high-quality AI prompts.</p>
+            <p className="text-muted-foreground mt-2">Explore and manage your high-quality AI prompts.</p>
           </div>
           <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="bg-primary/10 text-primary">
               Free Member
             </Badge>
             <Badge variant="outline">
@@ -56,11 +56,11 @@ export default function DashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Saved Prompts</CardTitle>
-              <Database className="h-4 w-4 text-teal-600" />
+              <Database className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0</div>
-              <p className="text-xs text-gray-600 mt-2">Ready to use anytime</p>
+              <p className="text-xs text-muted-foreground mt-2">Ready to use anytime</p>
             </CardContent>
           </Card>
         </div>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <Database className="w-5 h-5 text-teal-600" />
+                  <Database className="w-5 h-5 text-primary" />
                   <span>Latest Prompts</span>
                 </CardTitle>
                 <CardDescription>Recently added to the vault</CardDescription>
@@ -82,12 +82,12 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="space-y-3">
                   {latestPrompts.map((prompt) => (
-                    <div key={prompt.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div key={prompt.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                       <div className="flex-1">
                         <h4 className="font-medium text-sm">{prompt.title}</h4>
                         <div className="flex items-center space-x-2 mt-1">
                           <Badge variant="outline" className="text-xs">{prompt.category}</Badge>
-                          <span className="text-xs text-gray-500">{prompt.timeAgo}</span>
+                          <span className="text-xs text-muted-foreground">{prompt.timeAgo}</span>
                         </div>
                       </div>
                       <Link href={`/prompts/${prompt.slug}`}>
@@ -124,14 +124,14 @@ export default function DashboardPage() {
               <CardContent>
                 <div className="space-y-4">
                   {popularTools.map((tool, index) => (
-                    <div key={index} className="p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div key={index} className="p-3 border rounded-lg hover:bg-muted/30 transition-colors">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-sm">{tool.name}</h4>
                         <Badge variant="outline" className="text-xs">
                           {tool.category}
                         </Badge>
                       </div>
-                      <p className="text-xs text-gray-600 mb-3">{tool.description}</p>
+                      <p className="text-xs text-muted-foreground mb-3">{tool.description}</p>
                       <Button size="sm" variant="outline" className="w-full bg-transparent">
                         Explore
                       </Button>

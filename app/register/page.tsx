@@ -108,22 +108,22 @@ export default function RegisterPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Zap className="w-6 h-6 text-white" />
+            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Zap className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">ArcPrompt</span>
+            <span className="text-2xl font-bold text-foreground">ArcPrompt</span>
           </Link>
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Create your account</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-bold text-foreground mb-2">Create your account</h1>
+          <p className="text-muted-foreground">
             {plan === "pro" ? "Start your Pro journey" : "Start exploring high-quality prompts for free"}
           </p>
         </div>
 
-        <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+        <Card className="bg-card border shadow-lg">
           <CardHeader>
             <CardTitle>Sign Up</CardTitle>
             <CardDescription>Create your account to access the platform</CardDescription>
@@ -156,7 +156,7 @@ export default function RegisterPage() {
                 <Separator />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or continue with email</span>
+                <span className="bg-card px-2 text-muted-foreground">Or continue with email</span>
               </div>
             </div>
 
@@ -224,9 +224,9 @@ export default function RegisterPage() {
                     {passwordRequirements.map((req, index) => (
                       <div
                         key={index}
-                        className={`flex items-center space-x-2 ${req.met ? "text-green-600" : "text-gray-500"}`}
+                        className={`flex items-center space-x-2 ${req.met ? "text-green-600" : "text-muted-foreground"}`}
                       >
-                        <CheckCircle className={`w-3 h-3 ${req.met ? "text-green-500" : "text-gray-300"}`} />
+                        <CheckCircle className={`w-3 h-3 ${req.met ? "text-green-500" : "text-muted-foreground"}`} />
                         <span>{req.text}</span>
                       </div>
                     ))}
@@ -256,11 +256,11 @@ export default function RegisterPage() {
                 />
                 <Label htmlFor="terms" className="text-sm">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-blue-600 hover:underline">
+                  <Link href="/terms" className="text-primary hover:underline">
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-blue-600 hover:underline">
+                  <Link href="/privacy" className="text-primary hover:underline">
                     Privacy Policy
                   </Link>
                 </Label>
@@ -272,8 +272,8 @@ export default function RegisterPage() {
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-gray-600">Already have an account? </span>
-              <Link href="/login" className="text-blue-600 hover:underline">
+              <span className="text-muted-foreground">Already have an account? </span>
+              <Link href="/login" className="text-primary hover:underline">
                 Sign in
               </Link>
             </div>

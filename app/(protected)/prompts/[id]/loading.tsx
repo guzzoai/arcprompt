@@ -29,7 +29,7 @@ export default function Loading() {
               {/* Content Skeleton */}
               <div className="p-6 space-y-4">
                 <div className="h-6 bg-gray-200 rounded animate-pulse w-1/3"></div>
-                <div className="h-64 bg-gray-100 rounded-lg animate-pulse"></div>
+                <div className="h-64 bg-muted rounded-lg animate-pulse"></div>
               </div>
             </div>
           </div>

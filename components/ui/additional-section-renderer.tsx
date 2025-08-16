@@ -89,7 +89,7 @@ const getThemeColors = (type: string) => {
 }
 
 // Render different content block types
-const renderContentBlock = (block: ContentBlock, theme: ReturnType<typeof getThemeColors>, index: number) => {
+const renderContentBlock = (block: ContentBlock, theme: ReturnType<typeof getThemeColors>, index: number, sectionType: string) => {
   switch (block.type) {
     case 'list':
       if (!block.items) return null
@@ -107,7 +107,12 @@ const renderContentBlock = (block: ContentBlock, theme: ReturnType<typeof getThe
           <ul className="space-y-2">
             {block.items.map((item, itemIndex) => (
               <li key={itemIndex} className="flex items-start space-x-3">
-                <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                {/* Use checkmarks only for actionable items like tips and practices */}
+                {sectionType === 'tips' || sectionType === 'practices' ? (
+                  <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                ) : (
+                  <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 bg-current ${theme.accentColor}`} />
+                )}
                 <span className="text-gray-700" dangerouslySetInnerHTML={{ __html: item }} />
               </li>
             ))}
@@ -149,18 +154,32 @@ const renderContentBlock = (block: ContentBlock, theme: ReturnType<typeof getThe
     
     case 'text':
     default:
-      // For text blocks, try to parse them as lists if they contain list-like content
+      // For text blocks, only treat as lists if MOST lines explicitly start with list markers
       const textLines = block.content.split('\n').filter(line => line.trim())
-      const listPattern = /^[-*•]\s+/
-      const isListLike = textLines.length > 1 && textLines.filter(line => listPattern.test(line.trim())).length >= textLines.length * 0.5
+      const listPattern = /^[-*•]\s*/
+      const listLines = textLines.filter(line => listPattern.test(line.trim()))
       
-      if (isListLike) {
-        const items = textLines.map(line => line.replace(listPattern, '').trim()).filter(item => item)
+      // Only treat as a list if:
+      // 1. There are at least 2 actual list items
+      // 2. At least 80% of non-empty lines are list items
+      // 3. The content actually starts with a list marker
+      const isActualList = listLines.length >= 2 && 
+                          listLines.length >= textLines.length * 0.8 &&
+                          textLines.length > 0 && 
+                          listPattern.test(textLines[0].trim())
+      
+      if (isActualList) {
+        const items = listLines.map(line => line.replace(listPattern, '').trim()).filter(item => item)
         return (
           <ul key={index} className="space-y-2">
             {items.map((item, itemIndex) => (
               <li key={itemIndex} className="flex items-start space-x-3">
-                <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                {/* Use checkmarks only for actionable items like tips and practices */}
+                {sectionType === 'tips' || sectionType === 'practices' ? (
+                  <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                ) : (
+                  <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 bg-current ${theme.accentColor}`} />
+                )}
                 <span className="text-gray-700" dangerouslySetInnerHTML={{ __html: item }} />
               </li>
             ))}
@@ -186,24 +205,38 @@ export function AdditionalSectionRenderer({ title, type, icon, parsedContent, ra
       
       <div className="space-y-4">
         {parsedContent && parsedContent.length > 0 ? (
-          parsedContent.map((block, index) => renderContentBlock(block, theme, index))
+          parsedContent.map((block, index) => renderContentBlock(block, theme, index, type))
         ) : (
           // Fallback to raw content with smart parsing
           (() => {
             if (!rawContent) return null
             
-            // Try to parse raw content into lists
+            // Only parse as lists if content explicitly uses list markers
             const lines = rawContent.split('\n').map(line => line.trim()).filter(line => line.length > 0)
-            const listPattern = /^[-*•]\s+/
-            const isListContent = lines.filter(line => listPattern.test(line)).length >= lines.length * 0.4
+            const listPattern = /^[-*•]\s*/
+            const listLines = lines.filter(line => listPattern.test(line))
             
-            if (isListContent) {
-              const items = lines.map(line => line.replace(listPattern, '').trim()).filter(item => item)
+            // Only treat as a list if:
+            // 1. There are at least 2 actual list items
+            // 2. At least 80% of lines are list items
+            // 3. Content starts with a list marker
+            const isActualListContent = listLines.length >= 2 && 
+                                       listLines.length >= lines.length * 0.8 &&
+                                       lines.length > 0 && 
+                                       listPattern.test(lines[0])
+            
+            if (isActualListContent) {
+              const items = listLines.map(line => line.replace(listPattern, '').trim()).filter(item => item)
               return (
                 <ul className="space-y-2">
                   {items.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex items-start space-x-3">
-                      <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                      {/* Use checkmarks only for actionable items like tips and practices */}
+                      {type === 'tips' || type === 'practices' ? (
+                        <Check className={`flex-shrink-0 w-4 h-4 mt-0.5 ${theme.accentColor}`} />
+                      ) : (
+                        <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 bg-current ${theme.accentColor}`} />
+                      )}
                       <span className="text-gray-700" dangerouslySetInnerHTML={{ __html: item }} />
                     </li>
                   ))}
@@ -252,10 +285,14 @@ export function AdditionalSectionRenderer({ title, type, icon, parsedContent, ra
               )
             }
             
-            // Default fallback with improved styling
+            // Default fallback with improved styling and list formatting
+            // Process content to improve dash formatting while preserving HTML
+            const processedContent = rawContent
+              .replace(/^- /gm, '• ') // Replace dashes at start of line with bullets
+              .replace(/\n- /g, '\n• ') // Replace dashes after newlines with bullets
+            
             return (
-              <div className="text-gray-700 whitespace-pre-line leading-relaxed">
-                {rawContent}
+              <div className="text-gray-700 whitespace-pre-line leading-relaxed" dangerouslySetInnerHTML={{ __html: processedContent }}>
               </div>
             )
           })()

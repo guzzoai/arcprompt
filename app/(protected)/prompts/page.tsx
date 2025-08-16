@@ -35,16 +35,16 @@ export default function PromptsPage() {
   // Function to get category icon
   const getCategoryIcon = (category: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
-      "Marketing": <Megaphone className="w-5 h-5 text-[#2563EB]" />,
-      "Coding": <Code className="w-5 h-5 text-[#2563EB]" />,
-      "Writing": <PenTool className="w-5 h-5 text-[#2563EB]" />,
-      "Business": <Briefcase className="w-5 h-5 text-[#2563EB]" />,
-      "Creative": <Palette className="w-5 h-5 text-[#2563EB]" />,
-      "Analysis": <BarChart3 className="w-5 h-5 text-[#2563EB]" />,
-      "Education": <GraduationCap className="w-5 h-5 text-[#2563EB]" />,
-      "Social Media": <Share2 className="w-5 h-5 text-[#2563EB]" />
+      "Marketing": <Megaphone className="w-5 h-5 text-primary" />,
+      "Coding": <Code className="w-5 h-5 text-primary" />,
+      "Writing": <PenTool className="w-5 h-5 text-primary" />,
+      "Business": <Briefcase className="w-5 h-5 text-primary" />,
+      "Creative": <Palette className="w-5 h-5 text-primary" />,
+      "Analysis": <BarChart3 className="w-5 h-5 text-primary" />,
+      "Education": <GraduationCap className="w-5 h-5 text-primary" />,
+      "Social Media": <Share2 className="w-5 h-5 text-primary" />
     }
-    return iconMap[category] || <Database className="w-5 h-5 text-[#2563EB]" />
+    return iconMap[category] || <Database className="w-5 h-5 text-primary" />
   }
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -113,25 +113,25 @@ export default function PromptsPage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
-              <Database className="w-8 h-8 text-teal-600" />
+            <h1 className="text-3xl font-bold text-foreground flex items-center space-x-2">
+              <Database className="w-8 h-8 text-primary" />
               <span>Prompt Vault</span>
             </h1>
-            <p className="text-gray-600 mt-2">{categories.find(c => c.id === 'all')?.count || 0}+ professionally crafted prompts ready to use in your AI workflows</p>
+            <p className="text-muted-foreground mt-2">{categories.find(c => c.id === 'all')?.count || 0}+ professionally crafted prompts ready to use in your AI workflows</p>
           </div>
           <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-            <Badge variant="secondary" className="bg-teal-100 text-teal-800">
+            <Badge variant="secondary" className="bg-primary/10 text-primary">
               {prompts.length} Prompts Available
             </Badge>
           </div>
         </div>
 
         {/* Search and Filters */}
-        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
+        <Card className="bg-card border border shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Search prompts, categories, or tags..."
                   value={searchQuery}
@@ -182,20 +182,20 @@ export default function PromptsPage() {
             {loading ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, index) => (
-                  <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg animate-pulse min-h-[280px]">
+                  <Card key={index} className="bg-card border border shadow-lg animate-pulse min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
-                          <div className="h-4 bg-gray-300 rounded w-1/4 mb-3"></div>
-                          <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-                          <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                          <div className="h-6 bg-muted rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-1/4 mb-3"></div>
+                          <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-2/3"></div>
                         </div>
-                        <div className="w-8 h-8 bg-gray-300 rounded"></div>
+                        <div className="w-8 h-8 bg-muted rounded"></div>
                       </div>
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
-                      <div className="w-full h-12 bg-gray-300 rounded mb-6"></div>
+                      <div className="w-full h-12 bg-muted rounded mb-6"></div>
                     </CardContent>
                   </Card>
                 ))}
@@ -203,7 +203,7 @@ export default function PromptsPage() {
             ) : (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {sortedPrompts.map((prompt) => (
-                <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                <Card key={prompt.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                   <CardHeader className="pb-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
@@ -214,7 +214,7 @@ export default function PromptsPage() {
                           <span>{prompt.title}</span>
                         </CardTitle>
                         <div className="mt-2 ml-8">
-                          <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                          <Badge variant="outline" className="mb-2 bg-primary/10 border text-primary">{prompt.category}</Badge>
                         </div>
                         <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                         <div className="flex flex-wrap gap-1 ml-8 mt-2">
@@ -236,7 +236,7 @@ export default function PromptsPage() {
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleSavePrompt(prompt.id)}
-                        className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
+                        className={savedPrompts.includes(prompt.id) ? "text-primary" : "text-muted-foreground"}
                       >
                         {savedPrompts.includes(prompt.id) ? (
                           <Bookmark className="w-4 h-4 fill-current" />
@@ -248,13 +248,13 @@ export default function PromptsPage() {
                   </CardHeader>
                   <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
                     {isFreePlan && !isPromptUnlocked() ? (
-                      <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                      <Button variant="outline" className="w-full h-12 bg-card hover:bg-primary/10 border-2 border text-primary hover:text-primary font-semibold transition-all duration-300">
                         <Lock className="w-4 h-4 mr-2" />
                         Unlock Prompt
                       </Button>
                     ) : (
                       <Link href={`/prompts/${prompt.id}`} className="w-full">
-                        <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                        <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all duration-300 shadow-md">
                           <Eye className="w-4 h-4 mr-2" />
                           View Prompt
                         </Button>
@@ -272,7 +272,7 @@ export default function PromptsPage() {
               {sortedPrompts
                 .filter((prompt) => savedPrompts.includes(prompt.id))
                 .map((prompt) => (
-                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                  <Card key={prompt.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -283,7 +283,7 @@ export default function PromptsPage() {
                             <span>{prompt.title}</span>
                           </CardTitle>
                           <div className="mt-2 ml-8">
-                            <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                            <Badge variant="outline" className="mb-2 bg-primary/10 border text-primary">{prompt.category}</Badge>
                           </div>
                           <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                           <div className="flex flex-wrap gap-1 ml-8 mt-2">
@@ -305,7 +305,7 @@ export default function PromptsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleSavePrompt(prompt.id)}
-                          className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
+                          className={savedPrompts.includes(prompt.id) ? "text-primary" : "text-muted-foreground"}
                         >
                           {savedPrompts.includes(prompt.id) ? (
                             <Bookmark className="w-4 h-4 fill-current" />
@@ -317,13 +317,13 @@ export default function PromptsPage() {
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
                       {isFreePlan && !isPromptUnlocked() ? (
-                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                        <Button variant="outline" className="w-full h-12 bg-card hover:bg-primary/10 border-2 border text-primary hover:text-primary font-semibold transition-all duration-300">
                           <Lock className="w-4 h-4 mr-2" />
                           Unlock Prompt
                         </Button>
                       ) : (
                         <Link href={`/prompts/${prompt.id}`} className="w-full">
-                          <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                          <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all duration-300 shadow-md">
                             <Eye className="w-4 h-4 mr-2" />
                             View Prompt
                           </Button>
@@ -335,9 +335,9 @@ export default function PromptsPage() {
             </div>
             {savedPrompts.length === 0 && (
               <div className="text-center py-12">
-                <Bookmark className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No saved prompts yet</h3>
-                <p className="text-gray-600">Start saving prompts to build your personal collection</p>
+                <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">No saved prompts yet</h3>
+                <p className="text-muted-foreground">Start saving prompts to build your personal collection</p>
               </div>
             )}
           </TabsContent>
@@ -345,7 +345,7 @@ export default function PromptsPage() {
           <TabsContent value="popular" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {popularPrompts.map((prompt) => (
-                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                  <Card key={prompt.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -359,7 +359,7 @@ export default function PromptsPage() {
                             </div>
                           </CardTitle>
                           <div className="mt-2 ml-8">
-                            <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                            <Badge variant="outline" className="mb-2 bg-primary/10 border text-primary">{prompt.category}</Badge>
                           </div>
                           <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                           <div className="flex flex-wrap gap-1 ml-8 mt-2">
@@ -381,7 +381,7 @@ export default function PromptsPage() {
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleSavePrompt(prompt.id)}
-                          className={savedPrompts.includes(prompt.id) ? "text-blue-600" : "text-gray-400"}
+                          className={savedPrompts.includes(prompt.id) ? "text-primary" : "text-muted-foreground"}
                         >
                           {savedPrompts.includes(prompt.id) ? (
                             <Bookmark className="w-4 h-4 fill-current" />
@@ -393,13 +393,13 @@ export default function PromptsPage() {
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
                       {isFreePlan && !isPromptUnlocked() ? (
-                        <Button variant="outline" className="w-full h-12 bg-white hover:bg-[#DBEAFE] border-2 border-[#B0D3F3] text-[#2563EB] hover:text-[#1d4ed8] font-semibold transition-all duration-300">
+                        <Button variant="outline" className="w-full h-12 bg-card hover:bg-primary/10 border-2 border text-primary hover:text-primary font-semibold transition-all duration-300">
                           <Lock className="w-4 h-4 mr-2" />
                           Unlock Prompt
                         </Button>
                       ) : (
                         <Link href={`/prompts/${prompt.id}`} className="w-full">
-                          <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                          <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all duration-300 shadow-md">
                             <Eye className="w-4 h-4 mr-2" />
                             View Prompt
                           </Button>

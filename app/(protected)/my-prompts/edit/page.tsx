@@ -129,7 +129,7 @@ export default function EditPromptPage() {
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading prompt...</p>
+            <p className="mt-4 text-muted-foreground">Loading prompt...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -149,8 +149,8 @@ export default function EditPromptPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Edit Prompt</h1>
-              <p className="text-gray-600 mt-1">Update your custom prompt details</p>
+              <h1 className="text-3xl font-bold text-foreground">Edit Prompt</h1>
+              <p className="text-muted-foreground mt-1">Update your custom prompt details</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -183,10 +183,10 @@ export default function EditPromptPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Form */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <FileText className="w-5 h-5 text-[#2563EB]" />
+                  <FileText className="w-5 h-5 text-primary" />
                   <span>Prompt Details</span>
                 </CardTitle>
                 <CardDescription>
@@ -196,7 +196,7 @@ export default function EditPromptPage() {
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="title" className="flex items-center space-x-2">
-                    <Type className="w-4 h-4 text-gray-500" />
+                    <Type className="w-4 h-4 text-muted-foreground" />
                     <span>Title</span>
                   </Label>
                   <Input
@@ -210,7 +210,7 @@ export default function EditPromptPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="description" className="flex items-center space-x-2">
-                    <AlignLeft className="w-4 h-4 text-gray-500" />
+                    <AlignLeft className="w-4 h-4 text-muted-foreground" />
                     <span>Description</span>
                   </Label>
                   <Input
@@ -220,14 +220,14 @@ export default function EditPromptPage() {
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     className="h-11"
                   />
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Help others understand the purpose of this prompt
                   </p>
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="content" className="flex items-center space-x-2">
-                    <FileText className="w-4 h-4 text-gray-500" />
+                    <FileText className="w-4 h-4 text-muted-foreground" />
                     <span>Prompt Content</span>
                   </Label>
                   <Textarea
@@ -238,7 +238,7 @@ export default function EditPromptPage() {
                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
                     className="font-mono text-sm"
                   />
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Use square brackets like [TOPIC] or [AUDIENCE] for variable parts
                   </p>
                 </div>
@@ -248,10 +248,10 @@ export default function EditPromptPage() {
 
           {/* Right Column - Metadata */}
           <div className="space-y-6">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
-                  <FolderOpen className="w-5 h-5 text-[#2563EB]" />
+                  <FolderOpen className="w-5 h-5 text-primary" />
                   <span>Organization</span>
                 </CardTitle>
                 <CardDescription>
@@ -280,7 +280,7 @@ export default function EditPromptPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="folder" className="flex items-center space-x-2">
-                    <Folder className="w-4 h-4 text-gray-500" />
+                    <Folder className="w-4 h-4 text-muted-foreground" />
                     <span>Folder</span>
                   </Label>
                   <Select
@@ -302,7 +302,7 @@ export default function EditPromptPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="tags" className="flex items-center space-x-2">
-                    <Hash className="w-4 h-4 text-gray-500" />
+                    <Hash className="w-4 h-4 text-muted-foreground" />
                     <span>Tags</span>
                   </Label>
                   <Input
@@ -311,7 +311,7 @@ export default function EditPromptPage() {
                     value={formData.tags}
                     onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                   />
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     Separate tags with commas
                   </p>
                 </div>
@@ -320,21 +320,21 @@ export default function EditPromptPage() {
 
             {/* Prompt Info Card */}
             {prompt && (
-              <Card className="bg-gray-50 border border-gray-200">
+              <Card className="bg-muted/30 border border-border">
                 <CardHeader>
-                  <CardTitle className="text-sm font-medium text-gray-700">Prompt Information</CardTitle>
+                  <CardTitle className="text-sm font-medium text-foreground">Prompt Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Created</span>
+                    <span className="text-muted-foreground">Created</span>
                     <span className="font-medium">{prompt.createdAt}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Last Modified</span>
+                    <span className="text-muted-foreground">Last Modified</span>
                     <span className="font-medium">{prompt.lastModified}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Times Used</span>
+                    <span className="text-muted-foreground">Times Used</span>
                     <span className="font-medium">{prompt.usage}</span>
                   </div>
                 </CardContent>

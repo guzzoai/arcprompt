@@ -167,16 +167,16 @@ export default function MyPromptsPage() {
   // Function to get category icon
   const getCategoryIcon = (category: string) => {
     const iconMap: { [key: string]: React.ReactNode } = {
-      "Marketing": <Megaphone className="w-5 h-5 text-[#2563EB]" />,
-      "Coding": <Code className="w-5 h-5 text-[#2563EB]" />,
-      "Writing": <PenTool className="w-5 h-5 text-[#2563EB]" />,
-      "Business": <Briefcase className="w-5 h-5 text-[#2563EB]" />,
-      "Creative": <Palette className="w-5 h-5 text-[#2563EB]" />,
-      "Analysis": <BarChart3 className="w-5 h-5 text-[#2563EB]" />,
-      "Education": <GraduationCap className="w-5 h-5 text-[#2563EB]" />,
-      "Social Media": <Share2 className="w-5 h-5 text-[#2563EB]" />
+      "Marketing": <Megaphone className="w-5 h-5 text-primary" />,
+      "Coding": <Code className="w-5 h-5 text-primary" />,
+      "Writing": <PenTool className="w-5 h-5 text-primary" />,
+      "Business": <Briefcase className="w-5 h-5 text-primary" />,
+      "Creative": <Palette className="w-5 h-5 text-primary" />,
+      "Analysis": <BarChart3 className="w-5 h-5 text-primary" />,
+      "Education": <GraduationCap className="w-5 h-5 text-primary" />,
+      "Social Media": <Share2 className="w-5 h-5 text-primary" />
     }
-    return iconMap[category] || <Database className="w-5 h-5 text-[#2563EB]" />
+    return iconMap[category] || <Database className="w-5 h-5 text-primary" />
   }
 
   // Load saved prompts from the vault
@@ -284,14 +284,14 @@ export default function MyPromptsPage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
-              <User className="w-8 h-8 text-blue-600" />
+            <h1 className="text-3xl font-bold text-foreground flex items-center space-x-2">
+              <User className="w-8 h-8 text-primary" />
               <span>My Prompts</span>
             </h1>
-            <p className="text-gray-600 mt-2">Your saved prompts and custom creations in one place</p>
+            <p className="text-muted-foreground mt-2">Your saved prompts and custom creations in one place</p>
           </div>
           <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="bg-primary/10 text-primary">
               {myPrompts.length} Custom Prompts
             </Badge>
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -413,20 +413,20 @@ export default function MyPromptsPage() {
                     <div>
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center space-x-2">
-                          <Badge variant="outline" className="bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">
+                          <Badge variant="outline" className="bg-primary/10 border text-primary">
                             {selectedPrompt.category}
                           </Badge>
-                          <div className="flex items-center space-x-1 text-sm text-gray-600">
+                          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                             <Eye className="w-3 h-3" />
                             <span>{selectedPrompt.usage} uses</span>
                           </div>
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           Modified {selectedPrompt.lastModified}
                         </div>
                       </div>
                       
-                      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <div className="bg-muted/30 rounded-lg p-6 border border-border">
                         <pre className="whitespace-pre-wrap text-sm font-mono">{selectedPrompt.content}</pre>
                       </div>
                     </div>
@@ -471,11 +471,11 @@ export default function MyPromptsPage() {
         </div>
 
         {/* Search and Filters */}
-        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
+        <Card className="bg-card border border shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex flex-col lg:flex-row gap-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Search your prompts..."
                   value={searchQuery}
@@ -518,20 +518,20 @@ export default function MyPromptsPage() {
             {loadingSaved ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[...Array(3)].map((_, index) => (
-                  <Card key={index} className="bg-white border border-[#B0D3F3] shadow-lg animate-pulse min-h-[280px]">
+                  <Card key={index} className="bg-card border border shadow-lg animate-pulse min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
-                          <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
-                          <div className="h-4 bg-gray-300 rounded w-1/4 mb-3"></div>
-                          <div className="h-4 bg-gray-300 rounded w-full mb-2"></div>
-                          <div className="h-4 bg-gray-300 rounded w-2/3"></div>
+                          <div className="h-6 bg-muted rounded w-3/4 mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-1/4 mb-3"></div>
+                          <div className="h-4 bg-muted rounded w-full mb-2"></div>
+                          <div className="h-4 bg-muted rounded w-2/3"></div>
                         </div>
-                        <div className="w-8 h-8 bg-gray-300 rounded"></div>
+                        <div className="w-8 h-8 bg-muted rounded"></div>
                       </div>
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
-                      <div className="w-full h-12 bg-gray-300 rounded mb-6"></div>
+                      <div className="w-full h-12 bg-muted rounded mb-6"></div>
                     </CardContent>
                   </Card>
                 ))}
@@ -539,7 +539,7 @@ export default function MyPromptsPage() {
             ) : savedPrompts.length > 0 ? (
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {savedPrompts.map((prompt) => (
-                  <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
+                  <Card key={prompt.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 flex flex-col gap-0 min-h-[280px]">
                     <CardHeader className="pb-0">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
@@ -550,7 +550,7 @@ export default function MyPromptsPage() {
                             <span>{prompt.title}</span>
                           </CardTitle>
                           <div className="mt-2 ml-8">
-                            <Badge variant="outline" className="mb-2 bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">{prompt.category}</Badge>
+                            <Badge variant="outline" className="mb-2 bg-primary/10 border text-primary">{prompt.category}</Badge>
                           </div>
                           <CardDescription className="line-clamp-2 ml-8">{prompt.shortDescription}</CardDescription>
                           <div className="flex flex-wrap gap-1 ml-8 mt-2">
@@ -568,12 +568,12 @@ export default function MyPromptsPage() {
                             )}
                           </div>
                         </div>
-                        <Bookmark className="w-4 h-4 text-blue-600 fill-current" />
+                        <Bookmark className="w-4 h-4 text-primary fill-current" />
                       </div>
                     </CardHeader>
                     <CardContent className="flex-1 flex justify-center items-end p-0 px-6">
                       <Link href={`/prompts/${prompt.id}`} className="w-full">
-                        <Button className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md">
+                        <Button className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all duration-300 shadow-md">
                           <Eye className="w-4 h-4 mr-2" />
                           View Prompt
                         </Button>
@@ -584,9 +584,9 @@ export default function MyPromptsPage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <Bookmark className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No saved prompts yet</h3>
-                <p className="text-gray-600 mb-4">Start bookmarking prompts from the Prompt Vault</p>
+                <Bookmark className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-foreground mb-2">No saved prompts yet</h3>
+                <p className="text-muted-foreground mb-4">Start bookmarking prompts from the Prompt Vault</p>
                 <Link href="/prompts">
                   <Button>
                     <Database className="w-4 h-4 mr-2" />
@@ -601,7 +601,7 @@ export default function MyPromptsPage() {
           <TabsContent value="created" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredPrompts.map((prompt: any) => (
-            <Card key={prompt.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+            <Card key={prompt.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
@@ -626,7 +626,7 @@ export default function MyPromptsPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <Badge variant="outline">{prompt.category}</Badge>
-                  <div className="flex items-center space-x-4 text-sm text-gray-600">
+                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                     <div className="flex items-center space-x-1">
                       <Eye className="w-3 h-3" />
                       <span>{prompt.usage}</span>
@@ -642,7 +642,7 @@ export default function MyPromptsPage() {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t text-xs text-gray-500">
+                <div className="flex items-center justify-between pt-2 border-t text-xs text-muted-foreground">
                   <div className="flex items-center space-x-1">
                     <Calendar className="w-3 h-3" />
                     <span>Modified {prompt.lastModified}</span>
@@ -655,7 +655,7 @@ export default function MyPromptsPage() {
 
                 <div className="flex justify-center pt-2">
                   <Button 
-                    className="w-full h-12 bg-[#2563EB] hover:bg-[#1d4ed8] text-white font-semibold transition-all duration-300 shadow-md"
+                    className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all duration-300 shadow-md"
                     onClick={() => handleViewPrompt(prompt)}
                   >
                     <Eye className="w-4 h-4 mr-2" />
@@ -669,11 +669,11 @@ export default function MyPromptsPage() {
 
             {filteredPrompts.length === 0 && (
           <div className="text-center py-12">
-            <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               {searchQuery || selectedFolder !== "all" ? "No prompts found" : "No prompts yet"}
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               {searchQuery || selectedFolder !== "all"
                 ? "Try adjusting your search or filter criteria"
                 : "Create your first custom prompt to get started"}

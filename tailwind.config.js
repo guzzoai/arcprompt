@@ -51,6 +51,20 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Dark theme specific colors from screenshots
+        dark: {
+          bg: {
+            primary: '#0a0a0b',
+            secondary: '#141416',
+            tertiary: '#1a1a1d',
+            elevated: '#1f1f23',
+          },
+          border: {
+            DEFAULT: '#27272a',
+            subtle: '#1f1f23',
+            focus: '#3b82f6',
+          },
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

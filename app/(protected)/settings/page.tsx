@@ -61,8 +61,8 @@ export default function SettingsPage() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account settings and preferences</p>
+          <h1 className="text-3xl font-bold text-foreground">Settings</h1>
+          <p className="text-muted-foreground mt-2">Manage your account settings and preferences</p>
         </div>
 
         {/* Settings Tabs */}
@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
           {/* Profile Tab */}
           <TabsContent value="profile" className="space-y-6">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <User className="w-5 h-5" />
@@ -93,7 +93,7 @@ export default function SettingsPage() {
                     </Avatar>
                     <div className="space-y-2">
                       <Button variant="outline">Change Photo</Button>
-                      <p className="text-sm text-gray-600">JPG, GIF or PNG. Max size of 2MB.</p>
+                      <p className="text-sm text-muted-foreground">JPG, GIF or PNG. Max size of 2MB.</p>
                     </div>
                   </div>
 
@@ -130,7 +130,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label className="text-base">Email Notifications</Label>
-                        <p className="text-sm text-gray-600">Receive notifications about your account activity</p>
+                        <p className="text-sm text-muted-foreground">Receive notifications about your account activity</p>
                       </div>
                       <Switch
                         checked={preferences.emailNotifications}
@@ -143,7 +143,7 @@ export default function SettingsPage() {
                     <div className="flex items-center justify-between">
                       <div className="space-y-1">
                         <Label className="text-base">Marketing Emails</Label>
-                        <p className="text-sm text-gray-600">Receive updates about new courses and special offers</p>
+                        <p className="text-sm text-muted-foreground">Receive updates about new courses and special offers</p>
                       </div>
                       <Switch
                         checked={preferences.marketingEmails}
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <Label className="text-base">Password</Label>
-                      <p className="text-sm text-gray-600">Last changed 3 months ago</p>
+                      <p className="text-sm text-muted-foreground">Last changed 3 months ago</p>
                     </div>
                     <Button variant="outline">Change Password</Button>
                   </div>
@@ -223,7 +223,7 @@ export default function SettingsPage() {
 
           {/* Billing Tab */}
           <TabsContent value="billing" className="space-y-6">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <CreditCard className="w-5 h-5" />
@@ -236,7 +236,7 @@ export default function SettingsPage() {
                   <div className="space-y-1">
                     <div className="flex items-center space-x-2">
                       <h3 className="font-semibold">{subscription.plan} Plan</h3>
-                      <Badge variant="secondary" className="bg-green-100 text-green-800">
+                      <Badge variant="secondary" className="bg-green-100 text-green-600">
                         {subscription.status}
                       </Badge>
                     </div>
@@ -263,11 +263,11 @@ export default function SettingsPage() {
 
                     <div className="space-y-4">
                       <h4 className="font-medium text-red-600">Danger Zone</h4>
-                      <div className="p-4 border border-red-200 rounded-lg bg-red-50">
+                      <div className="p-4 border border-red-200 rounded-lg bg-red-500/10">
                         <div className="flex items-center justify-between">
                           <div>
                             <h5 className="font-medium">Cancel Subscription</h5>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-muted-foreground">
                               You&apos;ll retain access until your current billing period ends
                             </p>
                           </div>

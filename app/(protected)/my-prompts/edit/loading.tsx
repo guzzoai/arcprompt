@@ -3,7 +3,7 @@ export default function Loading() {
     <div className="flex items-center justify-center min-h-[60vh]">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#2563EB] mx-auto"></div>
-        <p className="mt-4 text-gray-600">Loading prompt...</p>
+        <p className="mt-4 text-muted-foreground">Loading prompt...</p>
       </div>
     </div>
   )

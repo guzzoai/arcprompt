@@ -28,6 +28,15 @@ function shouldShowMultiStep(prompt: PromptDetail | null): boolean {
   return !!(prompt.steps && prompt.steps.length > 1)
 }
 
+// Helper to process markdown formatting in text
+function processMarkdown(text: string): string {
+  if (!text || typeof text !== 'string') return text || ''
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **text** to <strong>text</strong>
+    .replace(/\*(.*?)\*\*:/g, '<strong>$1</strong>:') // Handle malformed *text**: pattern
+    .replace(/\*(.*?)\*/g, '<em>$1</em>') // Convert *text* to <em>text</em>
+}
+
 export default function PromptDetailPage() {
   const params = useParams()
   const [prompt, setPrompt] = useState<PromptDetail | null>(null)
@@ -122,7 +131,7 @@ export default function PromptDetailPage() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading prompt...</p>
+            <p className="mt-4 text-muted-foreground">Loading prompt...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -133,8 +142,8 @@ export default function PromptDetailPage() {
     return (
       <DashboardLayout>
         <div className="text-center py-12">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Prompt Not Found</h1>
-          <p className="text-gray-600 mb-6">The prompt you're looking for doesn't exist or has been removed.</p>
+          <h1 className="text-2xl font-bold text-foreground mb-4">Prompt Not Found</h1>
+          <p className="text-muted-foreground mb-6">The prompt you&apos;re looking for doesn&apos;t exist or has been removed.</p>
           <Link href="/prompts">
             <Button>
               <ArrowLeft className="w-4 h-4 mr-2" />
@@ -150,32 +159,32 @@ export default function PromptDetailPage() {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Navigation Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-gray-500">
-          <Home className="w-4 h-4" />
-          <ChevronRight className="w-4 h-4" />
-          <Link href="/prompts" className="hover:text-gray-700">Prompts</Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900">{prompt.title}</span>
+        <div className="flex items-center space-x-2 text-sm">
+          <Home className="w-4 h-4 text-muted-foreground" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          <Link href="/prompts" className="text-muted-foreground hover:text-foreground transition-colors">Prompts</Link>
+          <ChevronRight className="w-4 h-4 text-muted-foreground/60" />
+          <span className="text-foreground font-medium">{prompt.title}</span>
         </div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Main Content */}
           <div className="lg:col-span-2">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border shadow-lg">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
-                    <CardTitle className="text-2xl font-bold text-gray-900 mb-2">
+                    <CardTitle className="text-2xl font-bold text-foreground mb-2">
                       {prompt.title}
                     </CardTitle>
-                    <p className="text-gray-600">{prompt.shortDescription}</p>
+                    <p className="text-muted-foreground">{prompt.shortDescription}</p>
                   </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={toggleBookmark}
-                    className={isBookmarked ? "text-blue-600" : "text-gray-400 hover:text-gray-600"}
+                    className={isBookmarked ? "text-primary" : "text-muted-foreground hover:text-muted-foreground"}
                   >
                     <Bookmark className={`w-5 h-5 ${isBookmarked ? "fill-current" : ""}`} />
                   </Button>
@@ -203,7 +212,7 @@ export default function PromptDetailPage() {
                   {!shouldShowMultiStep(prompt) && (
                     <TabsContent value="prompt">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-semibold text-gray-900">Complete Prompt</h3>
+                        <h3 className="text-lg font-semibold text-foreground">Complete Prompt</h3>
                         <Button
                           onClick={() => handleCopy(prompt.content || '', 'main')}
                           size="sm"
@@ -222,8 +231,8 @@ export default function PromptDetailPage() {
                           )}
                         </Button>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
-                        <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
+                      <div className="bg-muted/30 rounded-lg p-6 border border-border">
+                        <pre className="whitespace-pre-wrap font-mono text-sm text-foreground leading-relaxed">
                           {prompt.content}
                         </pre>
                       </div>
@@ -235,11 +244,11 @@ export default function PromptDetailPage() {
                     <TabsContent key={index} value={`step-${index}`}>
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900">
+                          <h3 className="text-lg font-semibold text-foreground">
                             {step.title || `Step ${step.stepNumber}`}
                           </h3>
                           {step.estimatedTime && (
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-muted-foreground mt-1">
                               Estimated time: {step.estimatedTime}
                             </p>
                           )}
@@ -262,13 +271,13 @@ export default function PromptDetailPage() {
                           )}
                         </Button>
                       </div>
-                      <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                      <div className="bg-muted/30 rounded-lg p-6 border border-border">
                         {step.content ? (
-                          <pre className="whitespace-pre-wrap font-mono text-sm text-gray-800 leading-relaxed">
+                          <pre className="whitespace-pre-wrap font-mono text-sm text-foreground leading-relaxed">
                             {step.content}
                           </pre>
                         ) : (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                          <div className="bg-yellow-500/10 border border-yellow-200 rounded-lg p-4">
                             <p className="text-yellow-800 text-sm">
                               This step content is currently being prepared. Please check back soon for the complete step-by-step instructions.
                             </p>
@@ -283,14 +292,14 @@ export default function PromptDetailPage() {
                     <div className="space-y-8">
                       {/* How to Use */}
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">💡 How To Use</h3>
+                        <h3 className="text-lg font-semibold text-foreground mb-4">💡 How To Use</h3>
                         <ol className="space-y-2">
                           {promptInfo.howToUse.map((step, index) => (
                             <li key={index} className="flex items-start space-x-3">
-                              <span className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-800 rounded-full flex items-center justify-center text-sm font-medium">
+                              <span className="flex-shrink-0 w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-medium">
                                 {index + 1}
                               </span>
-                              <span className="text-gray-700">{step}</span>
+                              <span className="text-foreground">{step}</span>
                             </li>
                           ))}
                         </ol>
@@ -298,12 +307,12 @@ export default function PromptDetailPage() {
 
                       {/* What You'll Get */}
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">🎯 What You&apos;ll Get</h3>
+                        <h3 className="text-lg font-semibold text-foreground mb-4">🎯 What You&apos;ll Get</h3>
                         <ul className="space-y-2">
                           {promptInfo.whatYouGet.map((item, index) => (
                             <li key={index} className="flex items-start space-x-3">
                               <Check className="flex-shrink-0 w-5 h-5 text-green-600 mt-0.5" />
-                              <span className="text-gray-700">{item}</span>
+                              <span className="text-foreground">{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -311,12 +320,12 @@ export default function PromptDetailPage() {
 
                       {/* Expected Results */}
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">📈 Expected Results</h3>
+                        <h3 className="text-lg font-semibold text-foreground mb-4">📈 Expected Results</h3>
                         <ul className="space-y-2">
                           {promptInfo.expectedResults.map((result, index) => (
                             <li key={index} className="flex items-start space-x-3">
-                              <div className="flex-shrink-0 w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
-                              <span className="text-gray-700">{result}</span>
+                              <div className="flex-shrink-0 w-2 h-2 bg-primary rounded-full mt-2"></div>
+                              <span className="text-foreground">{result}</span>
                             </li>
                           ))}
                         </ul>
@@ -324,12 +333,12 @@ export default function PromptDetailPage() {
 
                       {/* Variations */}
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-4">🔄 Variations</h3>
+                        <h3 className="text-lg font-semibold text-foreground mb-4">🔄 Variations</h3>
                         <ul className="space-y-2">
                           {promptInfo.variations.map((variation, index) => (
                             <li key={index} className="flex items-start space-x-3">
                               <div className="flex-shrink-0 w-2 h-2 bg-purple-600 rounded-full mt-2"></div>
-                              <span className="text-gray-700">{variation}</span>
+                              <span className="text-foreground" dangerouslySetInnerHTML={{ __html: processMarkdown(variation) }}></span>
                             </li>
                           ))}
                         </ul>
@@ -362,22 +371,22 @@ export default function PromptDetailPage() {
 
           {/* Right Column - Info Card */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-6 bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="sticky top-6 bg-card border border shadow-lg">
               <CardHeader>
-                <CardTitle className="text-lg font-semibold text-gray-900">Prompt Details</CardTitle>
+                <CardTitle className="text-lg font-semibold text-foreground">Prompt Details</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Category and Type */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Category</h4>
-                  <Badge variant="outline" className="bg-[#DBEAFE] border-[#B0D3F3] text-[#2563EB]">
+                  <h4 className="text-sm font-medium text-foreground mb-2">Category</h4>
+                  <Badge variant="outline" className="bg-primary/10 border text-primary">
                     {prompt.category}
                   </Badge>
                 </div>
 
                 {/* Complexity and Type */}
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Details</h4>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Details</h4>
                   <div className="flex flex-wrap gap-2">
                     <Badge variant={prompt.complexity === "Beginner" ? "default" : prompt.complexity === "Intermediate" ? "secondary" : "destructive"}>
                       {prompt.complexity}
@@ -397,10 +406,10 @@ export default function PromptDetailPage() {
                 {/* Multi-step titles */}
                 {shouldShowMultiStep(prompt) && (
                   <div className="border-t pt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Workflow Steps</h4>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Workflow Steps</h4>
                     <ol className="space-y-1">
                       {prompt.steps!.map((step, index) => (
-                        <li key={index} className="text-sm text-gray-600">
+                        <li key={index} className="text-sm text-muted-foreground">
                           {index + 1}. {step.title || `Step ${step.stepNumber}`}
                         </li>
                       ))}
@@ -411,16 +420,16 @@ export default function PromptDetailPage() {
                 {/* Modified Date */}
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Updated</span>
+                    <span className="text-sm font-medium text-foreground">Updated</span>
                     <div className="flex items-center space-x-1">
-                      <Calendar className="w-4 h-4 text-gray-400" />
-                      <span className="text-sm text-gray-600">{prompt.modifiedDate}</span>
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">{prompt.modifiedDate}</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="border-t pt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Compatible Platforms</h4>
+                  <h4 className="text-sm font-medium text-foreground mb-2">Compatible Platforms</h4>
                   <div className="flex flex-wrap gap-1">
                     {prompt.platforms.map((platform) => (
                       <Badge key={platform} variant="outline" className="text-xs">
@@ -433,16 +442,16 @@ export default function PromptDetailPage() {
                 {/* Workflow Overview for multi-step */}
                 {shouldShowMultiStep(prompt) && prompt.workflowOverview && (
                   <div className="border-t pt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Workflow Overview</h4>
-                    <p className="text-sm text-gray-600">{prompt.workflowOverview}</p>
+                    <h4 className="text-sm font-medium text-foreground mb-2">Workflow Overview</h4>
+                    <p className="text-sm text-muted-foreground">{prompt.workflowOverview}</p>
                   </div>
                 )}
 
                 {/* What You Create for multi-step */}
                 {shouldShowMultiStep(prompt) && prompt.whatYouCreate && (
                   <div className="border-t pt-4">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">What You&apos;ll Create</h4>
-                    <p className="text-sm text-gray-600">{prompt.whatYouCreate}</p>
+                    <h4 className="text-sm font-medium text-foreground mb-2">What You&apos;ll Create</h4>
+                    <p className="text-sm text-muted-foreground">{prompt.whatYouCreate}</p>
                   </div>
                 )}
               </CardContent>

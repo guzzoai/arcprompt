@@ -8,13 +8,13 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
               <Zap className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">ArcPrompt</span>
+            <span className="text-xl font-bold text-foreground">ArcPrompt</span>
           </div>
           <div className="flex items-center space-x-4">
             <Link href="/login">
@@ -31,19 +31,19 @@ export default function PricingPage() {
       <section className="py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Flexible Plans for Every User</h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Flexible Plans for Every User</h1>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Choose the plan that best fits your needs and unlock the full potential of ArcPrompt.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg">
+            <Card className="bg-card border border-[#B0D3F3] shadow-lg">
               <CardHeader>
                 <CardTitle className="text-2xl">Free Tier</CardTitle>
                 <CardDescription>Perfect for getting started</CardDescription>
-                <div className="text-3xl font-bold text-gray-900">
-                  $0<span className="text-lg font-normal text-gray-500">/month</span>
+                <div className="text-3xl font-bold text-foreground">
+                  $0<span className="text-lg font-normal text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -73,15 +73,15 @@ export default function PricingPage() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg relative">
+            <Card className="bg-card border border-[#B0D3F3] shadow-lg relative">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <Badge className="bg-blue-600 text-white">Most Popular</Badge>
               </div>
               <CardHeader>
                 <CardTitle className="text-2xl">Pro Access</CardTitle>
                 <CardDescription>Full platform access</CardDescription>
-                <div className="text-3xl font-bold text-gray-900">
-                  $29<span className="text-lg font-normal text-gray-500">/month</span>
+                <div className="text-3xl font-bold text-foreground">
+                  $29<span className="text-lg font-normal text-muted-foreground">/month</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -115,7 +115,7 @@ export default function PricingPage() {
           </div>
 
           <div className="text-center mt-8">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               30-day money-back guarantee • Cancel anytime • Secure payment with Stripe
             </p>
           </div>
@@ -133,11 +133,11 @@ export default function PricingPage() {
                 </div>
                 <span className="text-xl font-bold">ArcPrompt</span>
               </div>
-              <p className="text-gray-400">Master AI prompting with structured learning and practical resources.</p>
+              <p className="text-muted-foreground">Master AI prompting with structured learning and practical resources.</p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Platform</h4>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <Link href="/prompts" className="hover:text-white">
                     Prompt Vault
@@ -157,7 +157,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <Link href="/help" className="hover:text-white">
                     Help Center
@@ -177,7 +177,7 @@ export default function PricingPage() {
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-muted-foreground">
                 <li>
                   <Link href="/privacy" className="hover:text-white">
                     Privacy
@@ -196,7 +196,7 @@ export default function PricingPage() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-muted-foreground">
             <p>&copy; 2024 ArcPrompt. All rights reserved.</p>
           </div>
         </div>

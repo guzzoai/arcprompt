@@ -172,24 +172,24 @@ export default function ToolsPage() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center space-x-2">
+            <h1 className="text-3xl font-bold text-foreground flex items-center space-x-2">
               <Wrench className="w-8 h-8 text-purple-600" />
               <span>AI Tools Directory</span>
             </h1>
-            <p className="text-gray-600 mt-2">Discover and explore the best AI tools for your workflow</p>
+            <p className="text-muted-foreground mt-2">Discover and explore the best AI tools for your workflow</p>
           </div>
           <div className="flex items-center space-x-4 mt-4 lg:mt-0">
-            <Badge variant="secondary" className="bg-purple-100 text-purple-800">
+            <Badge variant="secondary" className="bg-purple-500/10 text-purple-400 dark:text-purple-300">
               {tools.length} Tools Available
             </Badge>
           </div>
         </div>
 
         {/* Global Search Bar */}
-        <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
+        <Card className="bg-card border border shadow-lg py-2">
           <CardContent className="p-3">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
                 placeholder="Search tools, categories, or use cases..."
                 value={searchQuery}
@@ -215,13 +215,13 @@ export default function ToolsPage() {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 {/* All Tools Category Card */}
                 <Card
-                  className="cursor-pointer bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200 bg-gradient-to-br from-purple-50 to-blue-50"
+                  className="cursor-pointer bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200 bg-gradient-to-br from-purple-500/10 to-primary/10"
                   onClick={() => handleCategoryClick("all")}
                 >
                   <CardContent className="p-4 text-center">
                     <Wrench className="w-8 h-8 mx-auto mb-2 text-purple-600" />
                     <h3 className="font-medium text-sm">All Tools</h3>
-                    <p className="text-xs text-gray-600 mt-1">{tools.length} tools</p>
+                    <p className="text-xs text-muted-foreground mt-1">{tools.length} tools</p>
                   </CardContent>
                 </Card>
 
@@ -231,13 +231,13 @@ export default function ToolsPage() {
                   return (
                     <Card
                       key={category.id}
-                      className="cursor-pointer bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200"
+                      className="cursor-pointer bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200"
                       onClick={() => handleCategoryClick(category.id)}
                     >
                       <CardContent className="p-4 text-center">
                         <IconComponent className="w-8 h-8 mx-auto mb-2 text-purple-600" />
                         <h3 className="font-medium text-sm">{category.name}</h3>
-                        <p className="text-xs text-gray-600 mt-1">{category.count} tools</p>
+                        <p className="text-xs text-muted-foreground mt-1">{category.count} tools</p>
                       </CardContent>
                     </Card>
                   )
@@ -250,11 +250,11 @@ export default function ToolsPage() {
               <h2 className="text-xl font-semibold mb-4">Featured Tools</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {featuredTools.map((tool) => (
-                  <Card key={tool.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+                  <Card key={tool.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
                     <CardHeader>
                       <div className="flex items-start justify-between">
                         <div className="flex items-center space-x-3">
-                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                          <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
                             {(() => {
                               const IconComponent = getToolIcon(tool.category)
                               return <IconComponent className="w-8 h-8 text-purple-600" />
@@ -263,7 +263,7 @@ export default function ToolsPage() {
                           <div>
                             <CardTitle className="text-lg flex items-center space-x-2">
                               <span>{tool.name}</span>
-                              <Badge className="bg-yellow-500 text-white text-xs">Featured</Badge>
+                              <Badge className="bg-yellow-500 text-primary-foreground text-xs">Featured</Badge>
                             </CardTitle>
                           </div>
                         </div>
@@ -290,7 +290,7 @@ export default function ToolsPage() {
                       </div>
 
                       <div className="flex items-center justify-between pt-2 border-t">
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           For:{" "}
                           {tool.roles
                             .slice(0, 2)
@@ -315,7 +315,7 @@ export default function ToolsPage() {
           {/* All Tools Tab */}
           <TabsContent value="all" className="space-y-6">
             {/* Filters and Sorting */}
-            <Card className="bg-white border border-[#B0D3F3] shadow-lg py-2">
+            <Card className="bg-card border border shadow-lg py-2">
               <CardContent className="p-3">
                 <div className="flex flex-col lg:flex-row gap-4">
                   <div className="flex gap-2 flex-1">
@@ -361,7 +361,7 @@ export default function ToolsPage() {
                   </div>
                 </div>
 
-                <div className="mt-3 text-sm text-gray-600">
+                <div className="mt-3 text-sm text-muted-foreground">
                   Showing {filteredTools.length} of {tools.length} tools
                 </div>
               </CardContent>
@@ -370,11 +370,11 @@ export default function ToolsPage() {
             {/* Tools Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredTools.map((tool) => (
-                <Card key={tool.id} className="bg-white border border-[#B0D3F3] shadow-lg hover:shadow-xl hover:border-[#2563EB] transition-all duration-200">
+                <Card key={tool.id} className="bg-card border border shadow-lg hover:shadow-xl hover:border-primary transition-all duration-200">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
                           {(() => {
                             const IconComponent = getToolIcon(tool.category)
                             return <IconComponent className="w-8 h-8 text-purple-600" />
@@ -409,7 +409,7 @@ export default function ToolsPage() {
                     </div>
 
                     <div className="flex items-center justify-between pt-2 border-t">
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-muted-foreground">
                         For:{" "}
                         {tool.roles
                           .slice(0, 2)
@@ -431,8 +431,8 @@ export default function ToolsPage() {
 
             {filteredTools.length === 0 && (
               <div className="text-center py-12">
-                <div className="text-gray-500 text-lg mb-2">No tools found</div>
-                <div className="text-gray-400 text-sm">Try adjusting your search or filters</div>
+                <div className="text-muted-foreground text-lg mb-2">No tools found</div>
+                <div className="text-muted-foreground text-sm">Try adjusting your search or filters</div>
               </div>
             )}
           </TabsContent>

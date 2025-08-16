@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Database, Wrench, User, LogOut, Menu, X, Zap, Home } from "lucide-react"
 import Link from "next/link"
+import { SimpleThemeToggle } from "@/components/theme-toggle"
 import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/auth-context"
@@ -58,17 +59,17 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Mobile sidebar */}
       <div className={cn("fixed inset-0 z-50 lg:hidden", sidebarOpen ? "block" : "hidden")}>
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-75" onClick={() => setSidebarOpen(false)} />
-        <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-white">
-          <div className="flex h-16 items-center justify-between px-4 border-b">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+        <div className="fixed inset-y-0 left-0 flex w-full max-w-xs flex-col bg-background border-r border-border">
+          <div className="flex h-16 items-center justify-between px-4 border-b border-border">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-gray-900">ArcPrompt</span>
+              <span className="text-xl font-bold text-foreground">ArcPrompt</span>
             </div>
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
               <X className="w-5 h-5" />
@@ -83,7 +84,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   href={item.href}
                   className={cn(
                     "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                    isActive ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-100",
+                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   )}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -98,13 +99,13 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
-        <div className="flex flex-col flex-grow bg-white border-r border-gray-200">
+        <div className="flex flex-col flex-grow bg-background border-r border-border">
           <div className="flex items-center h-16 px-4 border-b">
             <Link href="/dashboard" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Zap className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold text-gray-900">ArcPrompt</span>
+              <span className="text-xl font-bold text-foreground">ArcPrompt</span>
             </Link>
           </div>
           <nav className="flex-1 px-4 py-4 space-y-2">
@@ -116,7 +117,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                   href={item.href}
                   className={cn(
                     "flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                    isActive ? "bg-blue-100 text-blue-700" : "text-gray-700 hover:bg-gray-100",
+                    isActive ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                   )}
                 >
                   <item.icon className="w-5 h-5" />
@@ -125,11 +126,11 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
               )
             })}
           </nav>
-          <div className="p-4 border-t">
-            <div className="bg-gradient-to-r from-blue-500 to-teal-500 rounded-lg p-4 text-white">
+          <div className="p-4 border-t border-border">
+            <div className="bg-gradient-to-r from-primary to-primary/80 rounded-lg p-4 text-primary-foreground">
               <h3 className="font-semibold text-sm">Unlock All Prompts</h3>
               <p className="text-xs opacity-90 mt-1">Access the full prompt vault and premium features</p>
-              <Button size="sm" className="mt-3 bg-white text-blue-600 hover:bg-gray-100">
+              <Button size="sm" className="mt-3 bg-background text-primary hover:bg-accent">
                 Upgrade Now
               </Button>
             </div>
@@ -140,21 +141,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top header */}
-        <header className="bg-white border-b border-gray-200 px-4 py-4 lg:px-8">
+        <header className="bg-background border-b border-border px-4 py-4 lg:px-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
                 <Menu className="w-5 h-5" />
               </Button>
               <div className="hidden lg:block">
-                <nav className="flex space-x-1 text-sm text-gray-600">
-                  <Link href="/dashboard" className="hover:text-gray-900">
+                <nav className="flex space-x-1 text-sm text-muted-foreground">
+                  <Link href="/dashboard" className="hover:text-foreground transition-colors">
                     Dashboard
                   </Link>
                   {pathname !== "/dashboard" && (
                     <>
-                      <span className="mx-2">/</span>
-                      <span className="text-gray-900 capitalize">{pathname.split("/").pop()?.replace("-", " ")}</span>
+                      <span className="mx-2 text-muted-foreground/60">/</span>
+                      <span className="text-foreground capitalize">{pathname.split("/").pop()?.replace("-", " ")}</span>
                     </>
                   )}
                 </nav>
@@ -162,9 +163,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Badge variant="secondary" className="bg-gray-100 text-gray-800">
+              <Badge variant="secondary" className="bg-muted text-muted-foreground">
                 Free Member
               </Badge>
+              <SimpleThemeToggle />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
